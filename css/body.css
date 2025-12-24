@@ -13,14 +13,6 @@ body {
     border-radius: 20px;
 }
 
-#navigationArea {
-    display: flex;
-    padding: 0 1%;
-    box-sizing: border-box;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
 @media only screen and (min-width: 700px) {
     body {
         display: grid;

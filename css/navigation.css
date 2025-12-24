@@ -2,6 +2,14 @@
 This stylesheet focuses on the basic design and layout.
 */
 
+#navigationArea {
+    display: flex;
+    padding: 0 1%;
+    box-sizing: border-box;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
 .navigationOption {
     background-color: #5000A1;
     color: white;
