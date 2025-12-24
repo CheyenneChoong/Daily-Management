@@ -1,0 +1,34 @@
+/*
+This stylesheet focuses on the basic design and layout.
+*/
+
+.navigationOption {
+    background-color: #5000A1;
+    color: white;
+}
+
+.navigationOption:hover {
+    background-color: #320166;
+    cursor: pointer;
+}
+
+.navigationOption {
+    display: flex;
+    gap: 1vw;
+    width: 23%;
+    height: 75%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.navigationOption img {
+    height: 80%;
+}
+
+@media only screen and (max-width: 900px) {
+    .navigationOption label {
+        display: none;
+    }
+}
