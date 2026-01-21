@@ -24,8 +24,7 @@ class Notification(QWidget) :
         self._content = QWidget(self)
     
     def resizeEvent(self, event):
-        self._hat.setMinimumWidth(self.width())
-        self._hat.setMinimumHeight(int(self.height() * 0.13))
+        self._hat.resize(self.width(), int(self.height() * 0.13))
         self._content.setMinimumWidth(self.width())
 
         if (self.height() <= 75) :

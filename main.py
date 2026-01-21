@@ -22,9 +22,9 @@ class Main(QMainWindow) :
 
         # Sets up the window and background.
         self.setWindowTitle('Daily Management')
-        self.background = QPixmap('media/background.png')
+        self.background = QPixmap('icon/background.png')
         self.setMinimumHeight(763)
-        self.setWindowIcon(QIcon('media/bts.png'))
+        self.setWindowIcon(QIcon('icon/bts.png'))
         self.showMaximized()
 
         # Central Widget

@@ -53,7 +53,7 @@ class Navigation(QWidget) :
     def resizeEvent(self, event):
         _buttonList = [self._option1, self._option2, self._option3, self._option4]
         _nameList = ["  Performance", "  Tasks To Do", "  Schedule", "  Monitoring"]
-        _iconList = ["media/performance.png", "media/task.png", "media/schedule.png", "media/monitoring.png"]
+        _iconList = ["icon/performance.png", "icon/task.png", "icon/schedule.png", "icon/monitoring.png"]
         for _button, _name, _icon in zip(_buttonList, _nameList, _iconList):
             _button.setMinimumHeight(int(self.height() * 0.75))
             self._buttonStyle(_button, _icon)

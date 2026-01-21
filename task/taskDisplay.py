@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+from task.taskPopup import *
+
 class mainTask(QWidget) :
     def __init__(self): # Constructor function.
         super().__init__()
@@ -51,50 +53,70 @@ class mainTask(QWidget) :
         self._createButton = QPushButton("CREATE", _topPanel)
         self._createButton.setStyleSheet(_style)
         self._createButton.setCursor(Qt.PointingHandCursor)
+        self._filterButton = QPushButton("FILTER", _topPanel)
+        self._filterButton.setStyleSheet(_style)
+        self._filterButton.setCursor(Qt.PointingHandCursor)
         self._searchInput = QLineEdit(_topPanel)
         self._searchInput.setStyleSheet("""
         height: 40px;
         font-size: 16px;
         padding-left: 10px;
+        padding-right: 10px;
         """)
         self._searchInput.setPlaceholderText("Search...")
         self._searchButton = QPushButton("SEARCH", _topPanel)
         self._searchButton.setStyleSheet(_style)
         self._searchButton.setCursor(Qt.PointingHandCursor)
         _layout2.addWidget(self._createButton)
-        _layout2.addSpacing(int(self.width() * 0.5))
+        _layout2.addWidget(self._filterButton)
+        _layout2.addSpacing(int(self.width() * 0.4))
         _layout2.addWidget(self._searchInput)
         _layout2.addWidget(self._searchButton)
 
-        _filterPanel = QWidget(self)
-        _filterPanel.setStyleSheet("background-color: none;")
-        _layout3 = QHBoxLayout()
-        _layout3.setContentsMargins(0, 0, 0, 0)
-        _filterPanel.setLayout(_layout3)
-        self._filterButton = []
-        _buttonCount = 0
-        for _buttonName, _buttonFunction in zip(["A-Z", "Date", "Priority", "Category", "Duration"], ["#", "#", "#", "#", "#"]):
-            self._filterButton.append(QPushButton(_buttonName, _filterPanel))
-            self._filterButton[_buttonCount].setCursor(Qt.PointingHandCursor)
-            self._filterButton[_buttonCount].setStyleSheet("""
-            QPushButton {
-                background-color: #8660D3;
-                height: 40px;
-                font-weight: bold;
-                font-size: 15px;
-            }
-            QPushButton:hover {
-                background-color: #6B43B9;
-            }
-            """)
-            _layout3.addWidget(self._filterButton[_buttonCount])
-            _buttonCount += 1
+        # Filter Panel.
+        # _filterPanel = QWidget(self)
+        # _filterPanel.setStyleSheet("background-color: none;")
+        # _layout3 = QHBoxLayout()
+        # _layout3.setContentsMargins(0, 0, 0, 0)
+        # _filterPanel.setLayout(_layout3)
+        # self._filterButton = []
+        # _buttonCount = 0
+        # for _buttonName, _buttonFunction in zip(["Date", "Priority", "Category"], ["#", "#", "#"]):
+        #     self._filterButton.append(QPushButton(_buttonName, _filterPanel))
+        #     self._filterButton[_buttonCount].setCursor(Qt.PointingHandCursor)
+        #     self._filterButton[_buttonCount].setStyleSheet("""
+        #     QPushButton {
+        #         background-color: #8660D3;
+        #         height: 40px;
+        #         font-weight: bold;
+        #         font-size: 15px;
+        #     }
+        #     QPushButton:hover {
+        #         background-color: #6B43B9;
+        #     }
+        #     """)
+        #     _layout3.addWidget(self._filterButton[_buttonCount])
+        #     _buttonCount += 1
 
+        # Main content area where tasks are displayed.
         _contentArea = QWidget(self)
         self._layout4 = QHBoxLayout()
 
+        # Adding all the widgets into the layout.
         _layout1.addWidget(_title, stretch=0)
         _layout1.addWidget(_topPanel, stretch=0)
-        _layout1.addWidget(_filterPanel, stretch=0)
+        # _layout1.addWidget(_filterPanel, stretch=0)
         _layout1.addWidget(_contentArea, stretch=1)
         _layout1.activate()
+
+        self._newTaskPopUp = newTask(self)
+        self._newTaskPopUp.hide()
+        self._createButton.clicked.connect(lambda: self._newTaskPopUp.show())
+
+        self._filterTaskPopUp = filterTask(self)
+        self._filterTaskPopUp.hide()
+        self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.show())
+
+    def resizeEvent(self, event):
+        self._newTaskPopUp.setGeometry(self.rect())
+        self._filterTaskPopUp.setGeometry(self.rect())
