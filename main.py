@@ -7,6 +7,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import sys
 
+# Import code for setting up database.
+from data.setupDB import *
+
 # Import content.
 from navigationArea.navigation import Navigation
 from notificationArea.notification import Notification

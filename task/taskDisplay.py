@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from task.taskPopup import *
+from task.task import Task
 
 class mainTask(QWidget) :
     def __init__(self): # Constructor function.
@@ -73,50 +74,80 @@ class mainTask(QWidget) :
         _layout2.addWidget(self._searchInput)
         _layout2.addWidget(self._searchButton)
 
-        # Filter Panel.
-        # _filterPanel = QWidget(self)
-        # _filterPanel.setStyleSheet("background-color: none;")
-        # _layout3 = QHBoxLayout()
-        # _layout3.setContentsMargins(0, 0, 0, 0)
-        # _filterPanel.setLayout(_layout3)
-        # self._filterButton = []
-        # _buttonCount = 0
-        # for _buttonName, _buttonFunction in zip(["Date", "Priority", "Category"], ["#", "#", "#"]):
-        #     self._filterButton.append(QPushButton(_buttonName, _filterPanel))
-        #     self._filterButton[_buttonCount].setCursor(Qt.PointingHandCursor)
-        #     self._filterButton[_buttonCount].setStyleSheet("""
-        #     QPushButton {
-        #         background-color: #8660D3;
-        #         height: 40px;
-        #         font-weight: bold;
-        #         font-size: 15px;
-        #     }
-        #     QPushButton:hover {
-        #         background-color: #6B43B9;
-        #     }
-        #     """)
-        #     _layout3.addWidget(self._filterButton[_buttonCount])
-        #     _buttonCount += 1
-
         # Main content area where tasks are displayed.
-        _contentArea = QWidget(self)
-        self._layout4 = QHBoxLayout()
+        self._contentArea = QWidget(self)
+        self._layout4 = QVBoxLayout()
+        self._layout4.setAlignment(Qt.AlignTop)
+        self._contentArea.setLayout(self._layout4)
+        self._displayTask()
 
         # Adding all the widgets into the layout.
         _layout1.addWidget(_title, stretch=0)
         _layout1.addWidget(_topPanel, stretch=0)
-        # _layout1.addWidget(_filterPanel, stretch=0)
-        _layout1.addWidget(_contentArea, stretch=1)
+        _layout1.addWidget(self._contentArea, stretch=1)
         _layout1.activate()
 
         self._newTaskPopUp = newTask(self)
         self._newTaskPopUp.hide()
-        self._createButton.clicked.connect(lambda: self._newTaskPopUp.show())
+        self._newTaskPopUp.installEventFilter(self)
+        self._createButton.clicked.connect(lambda: self._newTaskPopUp.createMode())
 
         self._filterTaskPopUp = filterTask(self)
         self._filterTaskPopUp.hide()
+        self._filterTaskPopUp.installEventFilter(self)
         self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.show())
 
     def resizeEvent(self, event):
         self._newTaskPopUp.setGeometry(self.rect())
         self._filterTaskPopUp.setGeometry(self.rect())
+
+    def eventFilter(self, component, event):
+        if event.type() == QEvent.Hide:
+            while self._layout4.count():
+                _data = self._layout4.takeAt(0)
+                _widget = _data.widget()
+                _widget.deleteLater()
+            self._displayTask()
+        return super().eventFilter(component, event)
+
+    def _displayTask(self):
+        self._editor = Task()
+        _allTask = self._editor.allTask()
+        for _data in _allTask:
+            _task = QWidget(self._contentArea)
+            _task.setMinimumHeight(60)
+            _task.setStyleSheet("background-color: white")
+            _taskLayout = QHBoxLayout()
+            _task.setLayout(_taskLayout)
+
+            _check = QCheckBox(_task)
+            _check.setCheckState(Qt.Checked if _data[7] == "completed" else Qt.Unchecked)
+            _check.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 20px;
+                height: 20px;
+                border-radius: 10px;
+            }
+            QCheckBox::indicator:unchecked {
+                border: 2px solid black;
+                background-color: white;
+            }
+            QCheckBox::indicator:checked {
+                border: 2px solid black;
+                background-color: #4B0096
+            }
+            """)
+            _check.clicked.connect(lambda checked, taskID = _data[0]: self._editor.markTask(taskID, QDate.currentDate().toString("M/d/yyyy")))
+            _taskLayout.addWidget(_check, stretch=0)
+
+            _detail = QWidget(_task)
+            _detailLayout = QVBoxLayout()
+            _detail.setLayout(_detailLayout)
+            _taskName = QLabel(_data[2], _task)
+            _taskName.setStyleSheet("font-weight: bold; font-size: 18px")
+            _taskDetail = QLabel(f"{_data[8]}, Due Date: {_data[3]}")
+            _taskDetail.setStyleSheet("font-size: 12px")
+            _detailLayout.addWidget(_taskName)
+            _detailLayout.addWidget(_taskDetail)
+            _taskLayout.addWidget(_detail, stretch=1)
+            self._layout4.addWidget(_task, stretch=0)

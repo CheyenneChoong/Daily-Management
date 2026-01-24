@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+# Import the backend class.
+from task.task import Task
+
 # Styling.
 _calendarStyle = """
 QCalendarWidget QToolButton {
@@ -65,6 +68,8 @@ class newTask(QWidget):
         background-color: rgba(77, 6, 83, 0.55);
         border-radius: 10px;
         """)
+        self._data = Task()
+        self._taskID = 0
 
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
@@ -88,6 +93,7 @@ class newTask(QWidget):
         self._categoryInput.setStyleSheet(_dropdownStyle)
         self._categoryInput.setEditable(True)
         self._categoryInput.setToolTip("Category")
+        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
 
         self._dueInput = QDateEdit()
         self._dueInput.setCalendarPopup(True)
@@ -115,6 +121,7 @@ class newTask(QWidget):
         self._priorityInput = QComboBox()
         self._priorityInput.setStyleSheet(_dropdownStyle)
         self._priorityInput.setToolTip("Priority")
+        self._priorityInput.addItems(["Low", "Important", "Urgent"])
 
         _buttonPanel = QWidget(self)
         _buttonPanel.setStyleSheet("background-color: white;")
@@ -136,9 +143,10 @@ class newTask(QWidget):
             background-color: #6D0000;
         }
         """)
-        self._createButton = QPushButton("CREATE", _buttonPanel)
-        self._createButton.setCursor(Qt.PointingHandCursor)
-        self._createButton.setStyleSheet("""
+        self._actionButton = QPushButton("CREATE", _buttonPanel)
+        self._actionButton.setCursor(Qt.PointingHandCursor)
+        self._actionButton.clicked.connect(self._create)
+        self._actionButton.setStyleSheet("""
         QPushButton {
             background-color: #009687;
             height: 40px;
@@ -151,7 +159,7 @@ class newTask(QWidget):
         }
         """)
         _buttonLayout.addWidget(self._cancelButton)
-        _buttonLayout.addWidget(self._createButton)
+        _buttonLayout.addWidget(self._actionButton)
 
         _containerLayout.addWidget(self._title, stretch=0)
         _containerLayout.addWidget(self._taskInput, stretch=0)
@@ -162,8 +170,37 @@ class newTask(QWidget):
         
         _mainLayout.addWidget(self._container)
     
+    def _create(self):
+        _taskName = self._taskInput.text().strip()
+        _categoryName = self._categoryInput.currentText().strip()
+        _dueDate = self._dueInput.text()
+        _executeDate = self._dateInput.text()
+        _priority = self._priorityInput.currentText().strip()
+        if not _taskName or not _categoryName or not _priority:
+            return
+        self._data.createTask(_categoryName, _taskName, _dueDate, _executeDate, _priority)
+        self._categoryInput.clear()
+        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
+        self.hide()
+
     def resizeEvent(self, event):
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.40))
+    
+    def createMode(self):
+        self._title.setText("Create New Task")
+        self._title.adjustSize()
+        self._title.repaint()
+        self._taskInput.setText("")
+        self._taskID = 0
+        self.show()
+
+    def editMode(self, taskID):
+        self._taskID = 0
+        self._title.setText("Edit Task")
+        self._title.adjustSize()
+        _taskData = self._data.singleTask(taskID)
+        self.show()
+        print(_taskData)
 
 class filterTask(QWidget):
     def __init__(self, parent=None):
@@ -193,6 +230,7 @@ class filterTask(QWidget):
         self._dateInput = QDateEdit()
         self._dateInput.setCalendarPopup(True)
         self._dateInput.setStyleSheet(_dateStyle)
+        self._dateInput.setDate(QDate.currentDate())
         self._dateInput.setToolTip("Filter by Date")
         _calendar = self._dateInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
