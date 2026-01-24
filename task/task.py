@@ -67,7 +67,7 @@ class Task():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"DELETE FROM tasks WHERE taskID = '{taskID}';")
+        _cursor.execute(f"DELETE FROM tasks WHERE taskID = {taskID};")
         _connect.commit()
         _connect.close()
         self._deleteCategory()

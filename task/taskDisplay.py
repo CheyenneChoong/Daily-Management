@@ -76,15 +76,29 @@ class mainTask(QWidget) :
 
         # Main content area where tasks are displayed.
         self._contentArea = QWidget(self)
+        self._contentArea.setStyleSheet("background-color: transparent")
         self._layout4 = QVBoxLayout()
         self._layout4.setAlignment(Qt.AlignTop)
+        self._layout4.setContentsMargins(0, 0, 0, 0)
         self._contentArea.setLayout(self._layout4)
+        _scroll = QScrollArea()
+        _scroll.setWidgetResizable(True)
+        _scroll.setWidget(self._contentArea)
+        _scroll.setStyleSheet("""
+        QScrollArea {
+            background-color: transparent;
+        } 
+        QScrollBar:vertical { 
+            background: black; 
+            width: 4px; 
+        }
+        """)
         self._displayTask()
 
         # Adding all the widgets into the layout.
         _layout1.addWidget(_title, stretch=0)
         _layout1.addWidget(_topPanel, stretch=0)
-        _layout1.addWidget(self._contentArea, stretch=1)
+        _layout1.addWidget(_scroll, stretch=1)
         _layout1.activate()
 
         self._newTaskPopUp = newTask(self)
@@ -103,21 +117,25 @@ class mainTask(QWidget) :
 
     def eventFilter(self, component, event):
         if event.type() == QEvent.Hide:
-            while self._layout4.count():
-                _data = self._layout4.takeAt(0)
-                _widget = _data.widget()
-                _widget.deleteLater()
-            self._displayTask()
+            self._refreshData()
         return super().eventFilter(component, event)
+    
+    def _refreshData(self):
+        while self._layout4.count():
+            _data = self._layout4.takeAt(0)
+            _widget = _data.widget()
+            _widget.deleteLater()
+        self._displayTask()
 
     def _displayTask(self):
         self._editor = Task()
         _allTask = self._editor.allTask()
         for _data in _allTask:
             _task = QWidget(self._contentArea)
-            _task.setMinimumHeight(60)
+            _task.setMaximumHeight(65)
             _task.setStyleSheet("background-color: white")
             _taskLayout = QHBoxLayout()
+            _taskLayout.setContentsMargins(25, 0, 25, 0)
             _task.setLayout(_taskLayout)
 
             _check = QCheckBox(_task)
@@ -150,4 +168,29 @@ class mainTask(QWidget) :
             _detailLayout.addWidget(_taskName)
             _detailLayout.addWidget(_taskDetail)
             _taskLayout.addWidget(_detail, stretch=1)
+
+            _priority = QLabel(_data[5], _task)
+            _priority.setStyleSheet(f"""
+            background-color: {"#DBA9FF" if _data[5] == "Low" else "#FEFFA9" if _data[5] == "Important" else "#FF9193" };
+            font-weight: bold;
+            font-size: 14px;
+            """)
+            _priority.setMaximumSize(150, 40)
+            _priority.setAlignment(Qt.AlignCenter)
+            _taskLayout.addWidget(_priority, stretch=1)
+
+            _button = QWidget(_task)
+            _buttonLayout = QHBoxLayout()
+            _button.setLayout(_buttonLayout)
+            _editButton = QPushButton(_button)
+            _editButton.setIcon(QIcon("icon/edit.png"))
+            _editButton.setIconSize(QSize(25, 25))
+            _editButton.clicked.connect(lambda event, taskID = _data[0]: self._newTaskPopUp.editMode(taskID))
+            _deleteButton = QPushButton(_button)
+            _deleteButton.setIcon(QIcon("icon/delete.png"))
+            _deleteButton.setIconSize(QSize(25, 25))
+            _deleteButton.clicked.connect(lambda event, taskID = _data[0]: (self._editor.deleteTask(taskID), self._refreshData()))
+            _buttonLayout.addWidget(_editButton, stretch=0)
+            _buttonLayout.addWidget(_deleteButton, stretch=0)
+            _taskLayout.addWidget(_button, stretch=0)
             self._layout4.addWidget(_task, stretch=0)

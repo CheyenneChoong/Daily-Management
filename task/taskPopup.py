@@ -68,12 +68,15 @@ class newTask(QWidget):
         background-color: rgba(77, 6, 83, 0.55);
         border-radius: 10px;
         """)
+        # Set up the variable to contain the Task class - connection to backend.
         self._data = Task()
-        self._taskID = 0
+        self._taskID = 0 # Variable to store task ID during edit mode.
 
+        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
+        # The pop up area (visible in white.)
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
@@ -89,12 +92,12 @@ class newTask(QWidget):
         self._taskInput.setStyleSheet(_inputStyle)
         self._taskInput.setPlaceholderText("Task Name")
         self._taskInput.setToolTip("Task Name")
+        self._taskInput.setMaxLength(35)
         self._categoryInput = QComboBox()
         self._categoryInput.setStyleSheet(_dropdownStyle)
         self._categoryInput.setEditable(True)
         self._categoryInput.setToolTip("Category")
-        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
-
+        # Calendar inputs.
         self._dueInput = QDateEdit()
         self._dueInput.setCalendarPopup(True)
         self._dueInput.setDate(QDate.currentDate())
@@ -117,12 +120,13 @@ class newTask(QWidget):
         _dateContainer.setLayout(_dateContainerLayout)
         _dateContainerLayout.addWidget(self._dueInput)
         _dateContainerLayout.addWidget(self._dateInput)
-        
+        # Priority input.
         self._priorityInput = QComboBox()
         self._priorityInput.setStyleSheet(_dropdownStyle)
         self._priorityInput.setToolTip("Priority")
         self._priorityInput.addItems(["Low", "Important", "Urgent"])
 
+        # Button panel.
         _buttonPanel = QWidget(self)
         _buttonPanel.setStyleSheet("background-color: white;")
         _buttonLayout = QHBoxLayout()
@@ -161,6 +165,7 @@ class newTask(QWidget):
         _buttonLayout.addWidget(self._cancelButton)
         _buttonLayout.addWidget(self._actionButton)
 
+        # Adding all the widgets to the visible area.
         _containerLayout.addWidget(self._title, stretch=0)
         _containerLayout.addWidget(self._taskInput, stretch=0)
         _containerLayout.addWidget(self._categoryInput, stretch=0)
@@ -168,9 +173,10 @@ class newTask(QWidget):
         _containerLayout.addWidget(self._priorityInput, stretch=0)
         _containerLayout.addWidget(_buttonPanel, stretch=0)
         
+        # Adds the visible area to the rest of the screen.
         _mainLayout.addWidget(self._container)
     
-    def _create(self):
+    def _create(self): # Function for creating and updating data.
         _taskName = self._taskInput.text().strip()
         _categoryName = self._categoryInput.currentText().strip()
         _dueDate = self._dueInput.text()
@@ -178,30 +184,43 @@ class newTask(QWidget):
         _priority = self._priorityInput.currentText().strip()
         if not _taskName or not _categoryName or not _priority:
             return
-        self._data.createTask(_categoryName, _taskName, _dueDate, _executeDate, _priority)
+        
+        if self._taskID > 0:
+            self._data.editTask(self._taskID, _categoryName, _taskName, _dueDate, _executeDate, _priority)
+        else:
+            self._data.createTask(_categoryName, _taskName, _dueDate, _executeDate, _priority)
         self._categoryInput.clear()
-        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
         self.hide()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event): # Responsive design to window size change.
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.40))
     
-    def createMode(self):
+    def createMode(self): # Sets data ready for create mode.
+        self._categoryInput.clear()
+        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
         self._title.setText("Create New Task")
         self._title.adjustSize()
         self._title.repaint()
         self._taskInput.setText("")
+        self._actionButton.setText("CREATE")
         self._taskID = 0
         self.show()
 
-    def editMode(self, taskID):
-        self._taskID = 0
+    def editMode(self, taskID): # Sets data ready for edit mode.
+        self._categoryInput.clear()
+        self._categoryInput.addItems([_category[0] for _category in self._data.category()])
+        self._taskID = taskID
         self._title.setText("Edit Task")
         self._title.adjustSize()
         _taskData = self._data.singleTask(taskID)
+        self._taskInput.setText(_taskData[2])
+        self._categoryInput.setCurrentText(_taskData[8])
+        self._dueInput.setDate(QDate.fromString(_taskData[3]))
+        self._dateInput.setDate(QDate.fromString(_taskData[4]))
+        self._priorityInput.setCurrentText(_taskData[5])
+        self._actionButton.setText("EDIT")
         self.show()
-        print(_taskData)
-
+        
 class filterTask(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
