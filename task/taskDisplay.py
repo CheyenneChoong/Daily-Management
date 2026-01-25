@@ -15,6 +15,7 @@ class mainTask(QWidget) :
         background-color: rgba(209, 187, 255, 0.6);
         border-radius: 10px;
         """)
+        self._editor = Task()
 
         # Set up the main layout.
         _layout1 = QVBoxLayout()
@@ -57,22 +58,8 @@ class mainTask(QWidget) :
         self._filterButton = QPushButton("FILTER", _topPanel)
         self._filterButton.setStyleSheet(_style)
         self._filterButton.setCursor(Qt.PointingHandCursor)
-        self._searchInput = QLineEdit(_topPanel)
-        self._searchInput.setStyleSheet("""
-        height: 40px;
-        font-size: 16px;
-        padding-left: 10px;
-        padding-right: 10px;
-        """)
-        self._searchInput.setPlaceholderText("Search...")
-        self._searchButton = QPushButton("SEARCH", _topPanel)
-        self._searchButton.setStyleSheet(_style)
-        self._searchButton.setCursor(Qt.PointingHandCursor)
         _layout2.addWidget(self._createButton)
         _layout2.addWidget(self._filterButton)
-        _layout2.addSpacing(int(self.width() * 0.4))
-        _layout2.addWidget(self._searchInput)
-        _layout2.addWidget(self._searchButton)
 
         # Main content area where tasks are displayed.
         self._contentArea = QWidget(self)
@@ -93,7 +80,7 @@ class mainTask(QWidget) :
             width: 4px; 
         }
         """)
-        self._displayTask()
+        self._displayTask(self._editor.filterTask(["000", None, None, None]))
 
         # Adding all the widgets into the layout.
         _layout1.addWidget(_title, stretch=0)
@@ -109,7 +96,7 @@ class mainTask(QWidget) :
         self._filterTaskPopUp = filterTask(self)
         self._filterTaskPopUp.hide()
         self._filterTaskPopUp.installEventFilter(self)
-        self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.show())
+        self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.filterMode())
 
     def resizeEvent(self, event):
         self._newTaskPopUp.setGeometry(self.rect())
@@ -125,11 +112,11 @@ class mainTask(QWidget) :
             _data = self._layout4.takeAt(0)
             _widget = _data.widget()
             _widget.deleteLater()
-        self._displayTask()
-
-    def _displayTask(self):
-        self._editor = Task()
-        _allTask = self._editor.allTask()
+        _filter = self._filterTaskPopUp.filterData()
+        self._displayTask(self._editor.filterTask(_filter))
+        
+    def _displayTask(self, data):
+        _allTask = data
         for _data in _allTask:
             _task = QWidget(self._contentArea)
             _task.setMaximumHeight(65)

@@ -85,13 +85,28 @@ class Task():
         _connect.commit()
         _connect.close()
     
-    def allTask(self):
+    def filterTask(self, filterCode):
+        _filter = {"category": f"c.categoryName = '{filterCode[1]}'", 
+                   "date": f"t.executeDate = '{filterCode[2]}'", 
+                   "priority": f"t.priority = '{filterCode[3]}'"}
+        _filterCombination = {
+            "000" : "",
+            "001" : f"WHERE {_filter['priority']}",
+            "010" : f"WHERE {_filter['date']}",
+            "100" : f"WHERE {_filter['category']}",
+            "011" : f"WHERE {_filter['date']} AND {_filter['priority']}",
+            "101" : f"WHERE {_filter['category']} AND {_filter['priority']}",
+            "110" : f"WHERE {_filter['category']} AND {_filter['date']}",
+            "111" : f"WHERE {_filter['category']} AND {_filter['date']} AND {_filter['priority']}"
+        }
+
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
         _sql = _cursor.execute(f"""
         SELECT t.*, c.categoryName
-        FROM tasks t LEFT JOIN category c ON t.categoryID = c.categoryID;
+        FROM tasks t LEFT JOIN category c ON t.categoryID = c.categoryID
+        {_filterCombination[filterCode[0]]};
         """)
         _data = _sql.fetchall()
         _connect.commit()

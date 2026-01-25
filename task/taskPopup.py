@@ -291,6 +291,7 @@ class filterTask(QWidget):
             background-color: #00524A;
         }
         """)
+        self._filterButton.clicked.connect(lambda: self._updateFilter())
         _buttonLayout.addWidget(self._cancelButton)
         _buttonLayout.addWidget(self._filterButton)
 
@@ -301,6 +302,37 @@ class filterTask(QWidget):
         _containerLayout.addWidget(_buttonPanel, stretch=0)
 
         _mainLayout.addWidget(self._container)
+        self._editor = Task()
+        self._filterCode = [0, 0, 0]
+        self._category = "Null"
+        self._date = "Null"
+        self._priority = "Null"
     
+    def filterMode(self):
+        self._categoryInput.clear()
+        self._categoryInput.addItem("--Select Category--")
+        self._categoryInput.setItemData(0, 0, Qt.UserRole - 1)
+        _categoryList = self._editor.category()
+        self._categoryInput.addItems([_category[0] for _category in _categoryList])
+        self._priorityInput.clear()
+        self._priorityInput.addItems(["--Select Priority--", "Low", "Important", "Urgent"])
+        self._priorityInput.setItemData(0, 0, Qt.UserRole -1)
+        self._dateInput.setSpecialValueText("--Select Date--")
+        self._dateInput.setDate(self._dateInput.minimumDate())
+        self.show()
+    
+    def _updateFilter(self):
+        self._category = self._categoryInput.currentText()
+        self._date = self._dateInput.text()
+        self._priority = self._priorityInput.currentText()
+        self._filterCode = [0 if self._category == "--Select Category--" else 1,
+                            0 if self._date == "--Select Date--" else 1,
+                            0 if self._priority == "--Select Priority--" else 1]
+        self.hide()
+    
+    def filterData(self):
+        return ["".join(map(str, self._filterCode)), self._category, self._date, self._priority]
+
+
     def resizeEvent(self, event):
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.35))
