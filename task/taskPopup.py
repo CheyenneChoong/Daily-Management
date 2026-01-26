@@ -230,14 +230,17 @@ class filterTask(QWidget):
         border-radius: 10px;
         """)
 
+        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
+        # Container for the visible pop up.
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
         self._container.setLayout(_containerLayout)
 
+        # Title and inputs.
         _title = QLabel("Filter")
         _title.setStyleSheet("""
         font-size: 25px;
@@ -256,7 +259,7 @@ class filterTask(QWidget):
         self._priorityInput = QComboBox()
         self._priorityInput.setStyleSheet(_dropdownStyle)
         self._priorityInput.setToolTip("Filter by Priority")
-
+        # Buttons.
         _buttonPanel = QWidget(self)
         _buttonPanel.setStyleSheet("background-color: white")
         _buttonLayout = QHBoxLayout()
@@ -295,20 +298,22 @@ class filterTask(QWidget):
         _buttonLayout.addWidget(self._cancelButton)
         _buttonLayout.addWidget(self._filterButton)
 
+        # Add and position in layout.
         _containerLayout.addWidget(_title, stretch=0)
         _containerLayout.addWidget(self._categoryInput, stretch=0)
         _containerLayout.addWidget(self._dateInput, stretch=0)
         _containerLayout.addWidget(self._priorityInput, stretch=-0)
         _containerLayout.addWidget(_buttonPanel, stretch=0)
-
         _mainLayout.addWidget(self._container)
+
+        # Predefined variables for usage.
         self._editor = Task()
         self._filterCode = [0, 0, 0]
         self._category = "Null"
         self._date = "Null"
         self._priority = "Null"
     
-    def filterMode(self):
+    def filterMode(self): # Resets the filter pop up.
         self._categoryInput.clear()
         self._categoryInput.addItem("--Select Category--")
         self._categoryInput.setItemData(0, 0, Qt.UserRole - 1)
@@ -321,7 +326,7 @@ class filterTask(QWidget):
         self._dateInput.setDate(self._dateInput.minimumDate())
         self.show()
     
-    def _updateFilter(self):
+    def _updateFilter(self): # Update the filter data.
         self._category = self._categoryInput.currentText()
         self._date = self._dateInput.text()
         self._priority = self._priorityInput.currentText()
@@ -330,9 +335,8 @@ class filterTask(QWidget):
                             0 if self._priority == "--Select Priority--" else 1]
         self.hide()
     
-    def filterData(self):
+    def filterData(self): # Returns the filter data.
         return ["".join(map(str, self._filterCode)), self._category, self._date, self._priority]
 
-
-    def resizeEvent(self, event):
+    def resizeEvent(self, event): # Resizes the pop based on window size. 
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.35))

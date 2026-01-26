@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 
 # Class for the Navigation panel.
 class Navigation(QWidget) :
-    def __init__(self): # Constructor function.
+    def __init__(self, tab): # Constructor function.
         super().__init__()
         self.setAttribute(Qt.WA_StyledBackground, True) # Ensures the Navigation is rendered.
         self.setStyleSheet("""
@@ -20,9 +20,13 @@ class Navigation(QWidget) :
 
         # Options within the navgation panel.
         self._option1 = QPushButton(self)
+        self._option1.clicked.connect(lambda: tab.setCurrentIndex(0))
         self._option2 = QPushButton(self)
+        self._option2.clicked.connect(lambda: tab.setCurrentIndex(1))
         self._option3 = QPushButton(self)
+        self._option3.clicked.connect(lambda: tab.setCurrentIndex(2))
         self._option4 = QPushButton(self)
+        self._option4.clicked.connect(lambda: tab.setCurrentIndex(3))
 
         # Adding the buttons to the layout.
         self._layout.addWidget(self._option1)

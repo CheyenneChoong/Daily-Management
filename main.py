@@ -39,10 +39,23 @@ class Main(QMainWindow) :
         self._layout.setSpacing(20)
         central.setLayout(self._layout)
 
-        self._navigationArea = Navigation()
-        self._notificationArea = Notification()
+        # Main area.
+        self._mainArea = QTabWidget()
+        self._mainArea.tabBar().hide()
+        self._mainArea.setStyleSheet("""
+        QTabWidget::pane {
+            background-color: transparent;
+            border: 0;
+        }
+        """)
+        self._mainArea.addTab(QWidget(), "Performance")
+        self._mainArea.addTab(mainTask(), "Tasks")
+        self._mainArea.addTab(QWidget(), "Schedule")
+        self._mainArea.addTab(QWidget(), "Monitoring")
 
-        self._mainArea = mainTask()
+        # Navigation and notification component.
+        self._navigationArea = Navigation(self._mainArea)
+        self._notificationArea = Notification()
     
     def paintEvent(self, event): # Function that adjusts the background based on the screen size.
         painter = QPainter(self)

@@ -88,26 +88,28 @@ class mainTask(QWidget) :
         _layout1.addWidget(_scroll, stretch=1)
         _layout1.activate()
 
+        # New Task / Edit Task Pop Up
         self._newTaskPopUp = newTask(self)
         self._newTaskPopUp.hide()
         self._newTaskPopUp.installEventFilter(self)
         self._createButton.clicked.connect(lambda: self._newTaskPopUp.createMode())
 
+        # Filter Task Pop Up
         self._filterTaskPopUp = filterTask(self)
         self._filterTaskPopUp.hide()
         self._filterTaskPopUp.installEventFilter(self)
         self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.filterMode())
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event): # Resizes the pop up according to the window size.
         self._newTaskPopUp.setGeometry(self.rect())
         self._filterTaskPopUp.setGeometry(self.rect())
 
-    def eventFilter(self, component, event):
+    def eventFilter(self, component, event): # Calls the refresh data function every time a pop up is closed.
         if event.type() == QEvent.Hide:
             self._refreshData()
         return super().eventFilter(component, event)
     
-    def _refreshData(self):
+    def _refreshData(self): # Refreshes the data.
         while self._layout4.count():
             _data = self._layout4.takeAt(0)
             _widget = _data.widget()
@@ -115,7 +117,7 @@ class mainTask(QWidget) :
         _filter = self._filterTaskPopUp.filterData()
         self._displayTask(self._editor.filterTask(_filter))
         
-    def _displayTask(self, data):
+    def _displayTask(self, data): # Displays the data.
         _allTask = data
         for _data in _allTask:
             _task = QWidget(self._contentArea)
