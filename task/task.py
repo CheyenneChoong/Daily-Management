@@ -2,7 +2,7 @@
 import sqlite3
 
 class Task():
-    def createTask(self, categoryName, taskName, dueDate, executeDate, priority):
+    def createTask(self, categoryName, taskName, dueDate, executeDate, priority): # Creates the task.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -20,7 +20,7 @@ class Task():
         _connect.commit()
         _connect.close()
     
-    def editTask(self, taskID, categoryName, taskName, dueDate, executeDate, priority):
+    def editTask(self, taskID, categoryName, taskName, dueDate, executeDate, priority): # Edits the task
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -47,7 +47,7 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def markTask(self, taskID, date):
+    def markTask(self, taskID, date): # Mark a task as completed or pending.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -63,7 +63,7 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def deleteTask(self, taskID):
+    def deleteTask(self, taskID): # Delete a task.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -72,7 +72,7 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def _deleteCategory(self):
+    def _deleteCategory(self): # Delete category.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -85,7 +85,7 @@ class Task():
         _connect.commit()
         _connect.close()
     
-    def filterTask(self, filterCode):
+    def filterTask(self, filterCode): # Return the list of task based on the filter.
         _filter = {"category": f"c.categoryName = '{filterCode[1]}'", 
                    "date": f"t.executeDate = '{filterCode[2]}'", 
                    "priority": f"t.priority = '{filterCode[3]}'"}
@@ -113,7 +113,7 @@ class Task():
         _connect.close()
         return _data
 
-    def singleTask(self, taskID):
+    def singleTask(self, taskID): # Return the data of a single task.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -127,7 +127,7 @@ class Task():
         _connect.close()
         return _data
 
-    def category(self):
+    def category(self): # Return the list of categories.
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _sql = _cursor.execute("SELECT categoryName FROM category")
