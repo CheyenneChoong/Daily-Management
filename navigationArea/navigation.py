@@ -56,8 +56,8 @@ class Navigation(QWidget) :
     # Function to ensure the navigation layout and display is responsive to the resizing of the window.
     def resizeEvent(self, event):
         _buttonList = [self._option1, self._option2, self._option3, self._option4]
-        _nameList = ["  Performance", "  Tasks To Do", "  Schedule", "  Monitoring"]
-        _iconList = ["icon/performance.png", "icon/task.png", "icon/schedule.png", "icon/monitoring.png"]
+        _nameList = ["  Performance", "  Tasks To Do", "  Schedule", "  Support"]
+        _iconList = ["icon/performance.png", "icon/task.png", "icon/schedule.png", "icon/support.png"]
         for _button, _name, _icon in zip(_buttonList, _nameList, _iconList):
             _button.setMinimumHeight(int(self.height() * 0.75))
             self._buttonStyle(_button, _icon)

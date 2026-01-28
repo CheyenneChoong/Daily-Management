@@ -63,7 +63,7 @@ QComboBox::down-arrow {{
 class newTask(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(Qt.WA_StyledBackground, True) # Ensures the Navigation is rendered.
+        self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet("""
         background-color: rgba(77, 6, 83, 0.55);
         border-radius: 10px;
@@ -224,7 +224,7 @@ class newTask(QWidget):
 class filterTask(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(Qt.WA_StyledBackground, True) # Ensures the Navigation is rendered.
+        self.setAttribute(Qt.WA_StyledBackground, True) 
         self.setStyleSheet("""
         background-color: rgba(77, 6, 83, 0.55);
         border-radius: 10px;

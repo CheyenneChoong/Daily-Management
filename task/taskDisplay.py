@@ -10,7 +10,7 @@ from task.task import Task
 class mainTask(QWidget) :
     def __init__(self): # Constructor function.
         super().__init__()
-        self.setAttribute(Qt.WA_StyledBackground, True) # Ensures the Navigation is rendered.
+        self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet("""
         background-color: rgba(209, 187, 255, 0.6);
         border-radius: 10px;
@@ -18,10 +18,10 @@ class mainTask(QWidget) :
         self._editor = Task()
 
         # Set up the main layout.
-        _layout1 = QVBoxLayout()
-        _layout1.setContentsMargins(25, 25, 25, 25)
-        _layout1.setSpacing(15)
-        self.setLayout(_layout1)
+        _mainLayout = QVBoxLayout()
+        _mainLayout.setContentsMargins(25, 25, 25, 25)
+        _mainLayout.setSpacing(15)
+        self.setLayout(_mainLayout)
 
         # Title Panel.
         _title = QLabel("Tasks", self)
@@ -35,9 +35,9 @@ class mainTask(QWidget) :
 
         # Top Panel - Create Button and Search Bar Row.
         _topPanel = QWidget(self)
-        _layout2 = QHBoxLayout()
-        _layout2.setContentsMargins(0, 0, 0, 0)
-        _topPanel.setLayout(_layout2)
+        _buttonPanel = QHBoxLayout()
+        _buttonPanel.setContentsMargins(0, 0, 0, 0)
+        _topPanel.setLayout(_buttonPanel)
         _topPanel.setStyleSheet("background-color: none;")
         _style = """
         QPushButton {
@@ -58,16 +58,16 @@ class mainTask(QWidget) :
         self._filterButton = QPushButton("FILTER", _topPanel)
         self._filterButton.setStyleSheet(_style)
         self._filterButton.setCursor(Qt.PointingHandCursor)
-        _layout2.addWidget(self._createButton)
-        _layout2.addWidget(self._filterButton)
+        _buttonPanel.addWidget(self._createButton)
+        _buttonPanel.addWidget(self._filterButton)
 
         # Main content area where tasks are displayed.
         self._contentArea = QWidget(self)
         self._contentArea.setStyleSheet("background-color: transparent")
-        self._layout4 = QVBoxLayout()
-        self._layout4.setAlignment(Qt.AlignTop)
-        self._layout4.setContentsMargins(0, 0, 0, 0)
-        self._contentArea.setLayout(self._layout4)
+        self._layout3 = QVBoxLayout()
+        self._layout3.setAlignment(Qt.AlignTop)
+        self._layout3.setContentsMargins(0, 0, 0, 0)
+        self._contentArea.setLayout(self._layout3)
         _scroll = QScrollArea()
         _scroll.setWidgetResizable(True)
         _scroll.setWidget(self._contentArea)
@@ -83,10 +83,10 @@ class mainTask(QWidget) :
         self._displayTask(self._editor.filterTask(["000", None, None, None]))
 
         # Adding all the widgets into the layout.
-        _layout1.addWidget(_title, stretch=0)
-        _layout1.addWidget(_topPanel, stretch=0)
-        _layout1.addWidget(_scroll, stretch=1)
-        _layout1.activate()
+        _mainLayout.addWidget(_title, stretch=0)
+        _mainLayout.addWidget(_topPanel, stretch=0)
+        _mainLayout.addWidget(_scroll, stretch=1)
+        _mainLayout.activate()
 
         # New Task / Edit Task Pop Up
         self._newTaskPopUp = newTask(self)
@@ -110,8 +110,8 @@ class mainTask(QWidget) :
         return super().eventFilter(component, event)
     
     def _refreshData(self): # Refreshes the data.
-        while self._layout4.count():
-            _data = self._layout4.takeAt(0)
+        while self._layout3.count():
+            _data = self._layout3.takeAt(0)
             _widget = _data.widget()
             _widget.deleteLater()
         _filter = self._filterTaskPopUp.filterData()
@@ -182,4 +182,4 @@ class mainTask(QWidget) :
             _buttonLayout.addWidget(_editButton, stretch=0)
             _buttonLayout.addWidget(_deleteButton, stretch=0)
             _taskLayout.addWidget(_button, stretch=0)
-            self._layout4.addWidget(_task, stretch=0)
+            self._layout3.addWidget(_task, stretch=0)

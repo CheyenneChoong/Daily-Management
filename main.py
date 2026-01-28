@@ -14,6 +14,7 @@ from data.setupDB import *
 from navigationArea.navigation import Navigation
 from notificationArea.notification import Notification
 from task.taskDisplay import mainTask
+from support.supportDisplay import mainSupport
 
 # Provides the environment to launch.
 app = QApplication(sys.argv)
@@ -51,7 +52,7 @@ class Main(QMainWindow) :
         self._mainArea.addTab(QWidget(), "Performance")
         self._mainArea.addTab(mainTask(), "Tasks")
         self._mainArea.addTab(QWidget(), "Schedule")
-        self._mainArea.addTab(QWidget(), "Monitoring")
+        self._mainArea.addTab(mainSupport(), "Support")
 
         # Navigation and notification component.
         self._navigationArea = Navigation(self._mainArea)
