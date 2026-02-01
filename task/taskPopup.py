@@ -128,7 +128,7 @@ class newTask(QWidget):
 
         # Button panel.
         _buttonPanel = QWidget(self)
-        _buttonPanel.setStyleSheet("background-color: white;")
+        _buttonPanel.setStyleSheet("background-color: none;")
         _buttonLayout = QHBoxLayout()
         _buttonLayout.setContentsMargins(0, 0, 0, 0)
         _buttonPanel.setLayout(_buttonLayout)

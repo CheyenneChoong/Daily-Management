@@ -23,5 +23,44 @@ CREATE TABLE IF NOT EXISTS tasks (
     FOREIGN KEY (categoryID) REFERENCES category(categoryID) ON DELETE CASCADE
 )
 """)
+_cursor.execute("""
+CREATE TABLE IF NOT EXISTS support (
+    supportID INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    link TEXT NOT NULL
+)
+""")
+_cursor.execute("""
+CREATE TABLE IF NOT EXISTS emotion (
+    emotionID INTEGER PRIMARY KEY AUTOINCREMENT,
+    emotionalState TEXT NOT NULL
+)
+""")
+_cursor.execute("""
+CREATE TABLE IF NOT EXISTS schedule (
+    scheduleID INTEGER PRIMARY KEY AUTOINCREMENT,
+    event TEXT NOT NULL,
+    dateTime TEXT,
+    venue TEXT
+)
+""")
+_cursor.execute("""
+CREATE TABLE IF NOT EXISTS emotionalSupport (
+    emotionalSupportID INTEGER PRIMARY KEY AUTOINCREMENT,
+    supportID INTEGER,
+    emotionID INTEGER,
+    FOREIGN KEY (supportID) REFERENCES support(supportID) ON DELETE CASCADE,
+    FOREIGN KEY (emotionID) REFERENCES emotion(emotionID) ON DELETE CASCADE
+)
+""")
+_cursor.execute("""
+CREATE TABLE IF NOT EXISTS scheduleState (
+    scheduleStateID INTEGER PRIMARY KEY AUTOINCREMENT,
+    scheduleID INTEGER,
+    emotionID INTEGER,
+    FOREIGN KEY (scheduleID) REFERENCES schedule(scheduleID) ON DELETE CASCADE,
+    FOREIGN KEY (emotionID) REFERENCES emotion(emotionID) ON DELETE CASCADE
+)
+""")
 _connect.commit()
 _connect.close()
