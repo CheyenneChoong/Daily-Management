@@ -5,6 +5,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+import webbrowser
 
 # Import pop up.
 from support.supportPopup import *
@@ -128,15 +129,24 @@ class mainSupport(QWidget):
         self._newEmotionPopup.installEventFilter(self)
         _addButton1.clicked.connect(lambda: self._newEmotionPopup.createMode())
 
+        self._newSupportPopup = newSupport(self)
+        self._newSupportPopup.hide()
+        self._newSupportPopup.installEventFilter(self)
+        _addButton2.clicked.connect(lambda: self._newSupportPopup.createMode())
+
         self._emotionEditor = emotionalState()
+        self._supportEditor = support()
         self._displayEmotion()
+        self._displaySupport()
     
     def resizeEvent(self, event):
         self._newEmotionPopup.setGeometry(self.rect())
+        self._newSupportPopup.setGeometry(self.rect())
     
     def eventFilter(self, component, event):
         if event.type() == QEvent.Hide:
             self._displayEmotion()
+            self._displaySupport()
         return super().eventFilter(component, event)
 
     def _displayEmotion(self):
@@ -176,4 +186,39 @@ class mainSupport(QWidget):
             self._contentLayout1.addWidget(_emotion)
     
     def _displaySupport(self):
-        print("Support")
+        while self._contentLayout2.count():
+            _data = self._contentLayout2.takeAt(0)
+            _widget = _data.widget()
+            _widget.deleteLater()
+        
+        _allSupport = self._supportEditor.allSupport()
+        for _data in _allSupport:
+            _support = QWidget(self._content2)
+            _support.setMaximumHeight(65)
+            _support.setStyleSheet("background-color: white")
+            _supportLayout = QHBoxLayout()
+            _supportLayout.setContentsMargins(25, 0, 25, 0)
+            _support.setLayout(_supportLayout)
+
+            _name = QLabel(f'''<a href="{_data[2]}" style="color: black; text-decoration: none;">{_data[1]}</a>''', _support)
+            _name.setOpenExternalLinks(True)
+            _name.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            _name.setStyleSheet("font-weight: bold; font-size: 18px;")
+            _supportLayout.addWidget(_name, stretch=1)
+
+            _button = QWidget(_support)
+            _buttonLayout = QHBoxLayout()
+            _button.setLayout(_buttonLayout)
+            _editButton = QPushButton(_button)
+            _editButton.setIcon(QIcon("icon/edit.png"))
+            _editButton.setIconSize(QSize(25, 25))
+            _editButton.clicked.connect(lambda event, supportID = _data[0]: self._newSupportPopup.editMode(supportID))
+            _deleteButton = QPushButton(_button)
+            _deleteButton.setIcon(QIcon("icon/delete.png"))
+            _deleteButton.setIconSize(QSize(25, 25))
+            _deleteButton.clicked.connect(lambda event, supportID = _data[0]: (self._supportEditor.delete(supportID), self._displaySupport()))
+            _buttonLayout.addWidget(_editButton, stretch=0)
+            _buttonLayout.addWidget(_deleteButton, stretch=0)
+            _supportLayout.addWidget(_button)
+
+            self._contentLayout2.addWidget(_support)
