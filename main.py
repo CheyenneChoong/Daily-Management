@@ -15,6 +15,7 @@ from navigationArea.navigation import Navigation
 from notificationArea.notification import Notification
 from task.taskDisplay import mainTask
 from support.supportDisplay import mainSupport
+from schedule.scheduleDisplay import mainSchedule
 
 # Provides the environment to launch.
 app = QApplication(sys.argv)
@@ -27,7 +28,7 @@ class Main(QMainWindow) :
         # Sets up the window and background.
         self.setWindowTitle('Daily Management')
         self.background = QPixmap('icon/background.png')
-        self.setMinimumHeight(763)
+        self.setMinimumHeight(900)
         self.setWindowIcon(QIcon('icon/bts.png'))
         self.showMaximized()
 
@@ -51,7 +52,7 @@ class Main(QMainWindow) :
         """)
         self._mainArea.addTab(QWidget(), "Performance")
         self._mainArea.addTab(mainTask(), "Tasks")
-        self._mainArea.addTab(QWidget(), "Schedule")
+        self._mainArea.addTab(mainSchedule(), "Schedule")
         self._mainArea.addTab(mainSupport(), "Support")
 
         # Navigation and notification component.

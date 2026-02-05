@@ -107,9 +107,7 @@ class support():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _emotions = _cursor.execute(f"""SELECT e.emotionID FROM emotionalSupport s 
-                                    LEFT JOIN emotion e ON s.emotionID = e.emotionID
-                                    WHERE s.supportID = {supportID}""")
+        _emotions = _cursor.execute(f"SELECT emotionID FROM emotionalSupport WHERE supportID = {supportID}")
         _emotions = _emotions.fetchall()
         _connect.commit()
         _connect.close()
