@@ -16,6 +16,7 @@ from notificationArea.notification import Notification
 from task.taskDisplay import mainTask
 from support.supportDisplay import mainSupport
 from schedule.scheduleDisplay import mainSchedule
+from performance.performanceDisplay import mainPerformance
 
 # Provides the environment to launch.
 app = QApplication(sys.argv)
@@ -50,7 +51,7 @@ class Main(QMainWindow) :
             border: 0;
         }
         """)
-        self._mainArea.addTab(QWidget(), "Performance")
+        self._mainArea.addTab(mainPerformance(), "Performance")
         self._mainArea.addTab(mainTask(), "Tasks")
         self._mainArea.addTab(mainSchedule(), "Schedule")
         self._mainArea.addTab(mainSupport(), "Support")
@@ -76,6 +77,7 @@ class Main(QMainWindow) :
             self._layout.addWidget(self._mainArea, 0, 5, 9, 11)
         
         if self.width() < 1000 and hasattr(self, "_layout") :
+            self._notificationArea.setMinimumHeight(80)
             self._layout.addWidget(self._navigationArea, 9, 0, 1, 1)
             self._layout.addWidget(self._notificationArea, 0, 0, 1, 1)
             self._layout.addWidget(self._mainArea, 1, 0, 8, 1)
