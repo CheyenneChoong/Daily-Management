@@ -75,9 +75,12 @@ class Main(QMainWindow) :
             self._layout.addWidget(self._navigationArea, 9, 5, 1, 11)
             self._layout.addWidget(self._notificationArea, 0, 0, 10, 4)
             self._layout.addWidget(self._mainArea, 0, 5, 9, 11)
+            self._notificationArea.setMaximumWidth(484)
+            self._notificationArea.setMaximumHeight(QWIDGETSIZE_MAX)
         
         if self.width() < 1000 and hasattr(self, "_layout") :
-            self._notificationArea.setMinimumHeight(80)
+            self._notificationArea.setMaximumHeight(200)
+            self._notificationArea.setMaximumWidth(QWIDGETSIZE_MAX)
             self._layout.addWidget(self._navigationArea, 9, 0, 1, 1)
             self._layout.addWidget(self._notificationArea, 0, 0, 1, 1)
             self._layout.addWidget(self._mainArea, 1, 0, 8, 1)

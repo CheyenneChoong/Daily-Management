@@ -118,11 +118,11 @@ class mainSupport(QWidget):
         _scroll2.setStyleSheet(_scrollStyle)
 
         # Add all the widgets to the main layout.
-        _mainLayout.addWidget(_mainTitle)
-        _mainLayout.addWidget(_section1)
-        _mainLayout.addWidget(_scroll1)
-        _mainLayout.addWidget(_section2)
-        _mainLayout.addWidget(_scroll2)
+        _mainLayout.addWidget(_mainTitle, stretch = 0)
+        _mainLayout.addWidget(_section1, stretch = 0)
+        _mainLayout.addWidget(_scroll1, stretch = 1)
+        _mainLayout.addWidget(_section2, stretch = 0)
+        _mainLayout.addWidget(_scroll2, stretch = 1)
 
         self._newEmotionPopup = newEmotion(self)
         self._newEmotionPopup.hide()

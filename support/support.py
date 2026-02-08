@@ -89,7 +89,7 @@ class support():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _supportData = _cursor.execute("SELECT * FROM support;")
-        _supportData = _supportData.fetchmany()
+        _supportData = _supportData.fetchall()
         _connect.commit()
         _connect.close()
         return _supportData

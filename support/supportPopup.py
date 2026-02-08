@@ -248,6 +248,7 @@ class newSupport(QWidget):
             _item = QListWidgetItem(_emotion[1])
             _item.setData(Qt.UserRole, _emotion[0])
             self._emotionInput.addItem(_item)
+        self._actionButton.setText("ADD")
         self.show()
     
     def editMode(self, supportID):
