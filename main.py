@@ -1,16 +1,8 @@
-# This file is the starting point and the code runs from here.
-# The code here connects to other sections and provides the base display.
-
-# Import PyQt5 libraries needed for the UI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import sys
-
-# Import code for setting up database.
 from data.setupDB import *
-
-# Import content.
 from navigationArea.navigation import Navigation
 from notificationArea.notification import Notification
 from task.taskDisplay import mainTask
@@ -18,15 +10,12 @@ from support.supportDisplay import mainSupport
 from schedule.scheduleDisplay import mainSchedule
 from performance.performanceDisplay import mainPerformance
 
-# Provides the environment to launch.
 app = QApplication(sys.argv)
 
-# Class that creates the main window launched.
 class Main(QMainWindow) :
     def __init__(self): # Constructor function.
         super().__init__()
 
-        # Sets up the window and background.
         self.setWindowTitle('Daily Management')
         self.background = QPixmap('icon/background.png')
         self.setMinimumHeight(900)

@@ -68,21 +68,17 @@ class newTask(QWidget):
         background-color: rgba(77, 6, 83, 0.55);
         border-radius: 10px;
         """)
-        # Set up the variable to contain the Task class - connection to backend.
         self._data = Task()
-        self._taskID = 0 # Variable to store task ID during edit mode.
+        self._taskID = 0
 
-        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
-        # The pop up area (visible in white.)
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
         self._container.setLayout(_containerLayout)
 
-        # Inputs
         self._title = QLabel("Create New Task")
         self._title.setStyleSheet("""
         font-size: 25px;
@@ -104,6 +100,7 @@ class newTask(QWidget):
         self._dueInput.setCalendarPopup(True)
         self._dueInput.setStyleSheet(_dateStyle)
         self._dueInput.setToolTip("Due Date")
+        self._dueInput.setDisplayFormat("M/d/yyyy")
         _calendar = self._dueInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         self._dateInput = QDateEdit()
@@ -112,6 +109,7 @@ class newTask(QWidget):
         self._dateInput.setCalendarPopup(True)
         self._dateInput.setStyleSheet(_dateStyle)
         self._dateInput.setToolTip("Date to Execute Task")
+        self._dateInput.setDisplayFormat("M/d/yyyy")
         _calendar = self._dateInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         _dateContainer = QWidget(self)
@@ -253,6 +251,7 @@ class filterTask(QWidget):
         self._dateInput.setCalendarPopup(True)
         self._dateInput.setStyleSheet(_dateStyle)
         self._dateInput.setDate(QDate.currentDate())
+        self._dateInput.setDisplayFormat("M/d/yyyy")
         self._dateInput.setToolTip("Filter by Date")
         _calendar = self._dateInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
