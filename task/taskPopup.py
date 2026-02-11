@@ -1,13 +1,8 @@
-# This file contains the class for the pop up display in the tasks management.
-# This file imports the connection to database from another file.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
-# Import the backend class.
 from task.task import Task
 
-# Styling.
 _calendarStyle = """
 QCalendarWidget QToolButton {
     color: black;
@@ -93,14 +88,13 @@ class newTask(QWidget):
         self._categoryInput.setStyleSheet(_dropdownStyle)
         self._categoryInput.setEditable(True)
         self._categoryInput.setToolTip("Category")
-        # Calendar inputs.
         self._dueInput = QDateEdit()
         self._dueInput.setCalendarPopup(True)
         self._dueInput.setDate(QDate.currentDate())
         self._dueInput.setCalendarPopup(True)
         self._dueInput.setStyleSheet(_dateStyle)
         self._dueInput.setToolTip("Due Date")
-        self._dueInput.setDisplayFormat("M/d/yyyy")
+        self._dueInput.setDisplayFormat("d/M/yyyy")
         _calendar = self._dueInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         self._dateInput = QDateEdit()
@@ -109,7 +103,7 @@ class newTask(QWidget):
         self._dateInput.setCalendarPopup(True)
         self._dateInput.setStyleSheet(_dateStyle)
         self._dateInput.setToolTip("Date to Execute Task")
-        self._dateInput.setDisplayFormat("M/d/yyyy")
+        self._dateInput.setDisplayFormat("d/M/yyyy")
         _calendar = self._dateInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         _dateContainer = QWidget(self)
@@ -118,13 +112,11 @@ class newTask(QWidget):
         _dateContainer.setLayout(_dateContainerLayout)
         _dateContainerLayout.addWidget(self._dueInput)
         _dateContainerLayout.addWidget(self._dateInput)
-        # Priority input.
         self._priorityInput = QComboBox()
         self._priorityInput.setStyleSheet(_dropdownStyle)
         self._priorityInput.setToolTip("Priority")
         self._priorityInput.addItems(["Low", "Important", "Urgent"])
 
-        # Button panel.
         _buttonPanel = QWidget(self)
         _buttonPanel.setStyleSheet("background-color: none;")
         _buttonLayout = QHBoxLayout()
@@ -163,7 +155,6 @@ class newTask(QWidget):
         _buttonLayout.addWidget(self._cancelButton)
         _buttonLayout.addWidget(self._actionButton)
 
-        # Adding all the widgets to the visible area.
         _containerLayout.addWidget(self._title, stretch=0)
         _containerLayout.addWidget(self._taskInput, stretch=0)
         _containerLayout.addWidget(self._categoryInput, stretch=0)
@@ -171,10 +162,14 @@ class newTask(QWidget):
         _containerLayout.addWidget(self._priorityInput, stretch=0)
         _containerLayout.addWidget(_buttonPanel, stretch=0)
         
-        # Adds the visible area to the rest of the screen.
         _mainLayout.addWidget(self._container)
     
-    def _create(self): # Function for creating and updating data.
+    def _create(self):
+        """
+        Function for creating / editing a task. The function checks
+        if the input is valid before inserting into database and 
+        hiding the pop up.
+        """
         _taskName = self._taskInput.text().strip()
         _categoryName = self._categoryInput.currentText().strip()
         _dueDate = self._dueInput.text()
@@ -190,10 +185,18 @@ class newTask(QWidget):
         self._categoryInput.clear()
         self.hide()
 
-    def resizeEvent(self, event): # Responsive design to window size change.
+    def resizeEvent(self, event):
+        """
+        Function for ensuring the visible pop up area resizes based on screen size.
+        This ensures the pop up remains visible and usable.
+        """
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.40))
     
-    def createMode(self): # Sets data ready for create mode.
+    def createMode(self): 
+        """
+        Function for resetting the inputs to be suitable for adding a new task.
+        This ensures no leftover from the edit mode.
+        """
         self._categoryInput.clear()
         self._categoryInput.addItems([_category[0] for _category in self._data.category()])
         self._title.setText("Create New Task")
@@ -204,7 +207,11 @@ class newTask(QWidget):
         self._taskID = 0
         self.show()
 
-    def editMode(self, taskID): # Sets data ready for edit mode.
+    def editMode(self, taskID): 
+        """
+        Function for setting the data of the inputs to be ready for edit mode.
+        :param taskID: ID for task that is being edited.
+        """
         self._categoryInput.clear()
         self._categoryInput.addItems([_category[0] for _category in self._data.category()])
         self._taskID = taskID
@@ -213,8 +220,8 @@ class newTask(QWidget):
         _taskData = self._data.singleTask(taskID)
         self._taskInput.setText(_taskData[2])
         self._categoryInput.setCurrentText(_taskData[8])
-        self._dueInput.setDate(QDate.fromString(_taskData[3], "M/d/yyyy"))
-        self._dateInput.setDate(QDate.fromString(_taskData[4], "M/d/yyyy"))
+        self._dueInput.setDate(QDate.fromString(_taskData[3], "d/M/yyyy"))
+        self._dateInput.setDate(QDate.fromString(_taskData[4], "d/M/yyyy"))
         self._priorityInput.setCurrentText(_taskData[5])
         self._actionButton.setText("EDIT")
         self.show()
@@ -228,17 +235,14 @@ class filterTask(QWidget):
         border-radius: 10px;
         """)
 
-        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
-        # Container for the visible pop up.
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
         self._container.setLayout(_containerLayout)
 
-        # Title and inputs.
         _title = QLabel("Filter")
         _title.setStyleSheet("""
         font-size: 25px;
@@ -251,14 +255,13 @@ class filterTask(QWidget):
         self._dateInput.setCalendarPopup(True)
         self._dateInput.setStyleSheet(_dateStyle)
         self._dateInput.setDate(QDate.currentDate())
-        self._dateInput.setDisplayFormat("M/d/yyyy")
+        self._dateInput.setDisplayFormat("d/M/yyyy")
         self._dateInput.setToolTip("Filter by Date")
         _calendar = self._dateInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         self._priorityInput = QComboBox()
         self._priorityInput.setStyleSheet(_dropdownStyle)
         self._priorityInput.setToolTip("Filter by Priority")
-        # Buttons.
         _buttonPanel = QWidget(self)
         _buttonPanel.setStyleSheet("background-color: white")
         _buttonLayout = QHBoxLayout()
@@ -297,7 +300,6 @@ class filterTask(QWidget):
         _buttonLayout.addWidget(self._cancelButton)
         _buttonLayout.addWidget(self._filterButton)
 
-        # Add and position in layout.
         _containerLayout.addWidget(_title, stretch=0)
         _containerLayout.addWidget(self._categoryInput, stretch=0)
         _containerLayout.addWidget(self._dateInput, stretch=0)
@@ -305,14 +307,18 @@ class filterTask(QWidget):
         _containerLayout.addWidget(_buttonPanel, stretch=0)
         _mainLayout.addWidget(self._container)
 
-        # Predefined variables for usage.
         self._editor = Task()
         self._filterCode = [0, 0, 0]
         self._category = "Null"
         self._date = "Null"
         self._priority = "Null"
     
-    def filterMode(self): # Resets the filter pop up.
+    def filterMode(self):
+        """
+        Function for resetting the filter options in the pop up.
+        This makes it easier for the user to filter through the 
+        tasks.
+        """
         self._categoryInput.clear()
         self._categoryInput.addItem("--Select Category--")
         self._categoryInput.setItemData(0, 0, Qt.UserRole - 1)
@@ -325,7 +331,11 @@ class filterTask(QWidget):
         self._dateInput.setDate(self._dateInput.minimumDate())
         self.show()
     
-    def _updateFilter(self): # Update the filter data.
+    def _updateFilter(self): 
+        """
+        Function for updating the filter. This updates the filter options that have been selected.
+        This ensures that the filtering is done properly despite the filter mode being resetted.
+        """
         self._category = self._categoryInput.currentText()
         self._date = self._dateInput.text()
         self._priority = self._priorityInput.currentText()
@@ -334,8 +344,15 @@ class filterTask(QWidget):
                             0 if self._priority == "--Select Priority--" else 1]
         self.hide()
     
-    def filterData(self): # Returns the filter data.
+    def filterData(self): 
+        """
+        Returns the filter code and the parameters for the filtering. 
+        """
         return ["".join(map(str, self._filterCode)), self._category, self._date, self._priority]
 
-    def resizeEvent(self, event): # Resizes the pop based on window size. 
+    def resizeEvent(self, event): 
+        """
+        Resizes the visible pop up based on screen size. Ensures that the pop up is visible, 
+        readable and usable regardless the screen size. 
+        """ 
         self._container.setFixedSize(int(self.width() * 0.65), int(self.height() * 0.35))

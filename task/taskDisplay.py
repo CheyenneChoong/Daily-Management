@@ -1,14 +1,11 @@
-# This file contains the class that focuses on the display of data and information.
-# Data handling is done in a different file.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
 from task.taskPopup import *
 from task.task import Task
 
 class mainTask(QWidget) :
-    def __init__(self): # Constructor function.
+    def __init__(self): 
         super().__init__()
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet("""
@@ -17,13 +14,11 @@ class mainTask(QWidget) :
         """)
         self._editor = Task()
 
-        # Set up the main layout.
         _mainLayout = QVBoxLayout()
         _mainLayout.setContentsMargins(25, 25, 25, 25)
         _mainLayout.setSpacing(15)
         self.setLayout(_mainLayout)
 
-        # Title Panel.
         _title = QLabel("Tasks", self)
         _title.setStyleSheet("""
         background-color: none;
@@ -33,7 +28,6 @@ class mainTask(QWidget) :
         """)
         _title.adjustSize()
 
-        # Top Panel - Create Button and Search Bar Row.
         _topPanel = QWidget(self)
         _buttonPanel = QHBoxLayout()
         _buttonPanel.setContentsMargins(0, 0, 0, 0)
@@ -61,7 +55,6 @@ class mainTask(QWidget) :
         _buttonPanel.addWidget(self._createButton)
         _buttonPanel.addWidget(self._filterButton)
 
-        # Main content area where tasks are displayed.
         self._contentArea = QWidget(self)
         self._contentArea.setStyleSheet("background-color: transparent")
         self._layout3 = QVBoxLayout()
@@ -82,42 +75,52 @@ class mainTask(QWidget) :
         """)
         self._displayTask(self._editor.filterTask(["000", None, None, None]))
 
-        # Adding all the widgets into the layout.
         _mainLayout.addWidget(_title, stretch=0)
         _mainLayout.addWidget(_topPanel, stretch=0)
         _mainLayout.addWidget(_scroll, stretch=1)
         _mainLayout.activate()
 
-        # New Task / Edit Task Pop Up
         self._newTaskPopUp = newTask(self)
         self._newTaskPopUp.hide()
         self._newTaskPopUp.installEventFilter(self)
         self._createButton.clicked.connect(lambda: self._newTaskPopUp.createMode())
 
-        # Filter Task Pop Up
         self._filterTaskPopUp = filterTask(self)
         self._filterTaskPopUp.hide()
         self._filterTaskPopUp.installEventFilter(self)
         self._filterButton.clicked.connect(lambda: self._filterTaskPopUp.filterMode())
 
-    def resizeEvent(self, event): # Resizes the pop up according to the window size.
+    def resizeEvent(self, event):
+        """
+        Function resizes the pop up based on the screen size. 
+        This ensures visibility, readability and usability.
+        """
         self._newTaskPopUp.setGeometry(self.rect())
         self._filterTaskPopUp.setGeometry(self.rect())
 
-    def eventFilter(self, component, event): # Calls the refresh data function every time a pop up is closed.
+    def eventFilter(self, component, event): 
+        """
+        Function refreshes the data being displayed each time
+        the pop up is closed. This ensures the data displayed is
+        accurate and timely.
+        """
         if event.type() == QEvent.Hide:
-            self._refreshData()
+            self._displayTask(self._editor.filterTask(self._filterTaskPopUp.filterData()))
         return super().eventFilter(component, event)
-    
-    def _refreshData(self): # Refreshes the data.
+           
+    def _displayTask(self, data):
+        """
+        Function removes the old tasks being displayed to make
+        way for the updated tasks to be displayed. Each data being 
+        displayed includes an edit and delete button. 
+
+        :param data: List of all the tasks that needs to be displayed.
+        """
         while self._layout3.count():
             _data = self._layout3.takeAt(0)
             _widget = _data.widget()
             _widget.deleteLater()
-        _filter = self._filterTaskPopUp.filterData()
-        self._displayTask(self._editor.filterTask(_filter))
-        
-    def _displayTask(self, data): # Displays the data.
+         
         _allTask = data
         for _data in _allTask:
             _task = QWidget(self._contentArea)
@@ -144,7 +147,7 @@ class mainTask(QWidget) :
                 background-color: #4B0096
             }
             """)
-            _check.clicked.connect(lambda checked, taskID = _data[0]: self._editor.markTask(taskID, QDate.currentDate().toString("M/d/yyyy")))
+            _check.clicked.connect(lambda checked, taskID = _data[0]: self._editor.markTask(taskID, QDate.currentDate().toString("d/M/yyyy")))
             _taskLayout.addWidget(_check, stretch=0)
 
             _detail = QWidget(_task)

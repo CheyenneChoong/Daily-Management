@@ -1,24 +1,27 @@
-# This file contains the class of the navigation panel.
+"""
+navigation.py focuses on the navigation bar.
+This is what the user uses to switch between tabs
+in the main display section.
+"""
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-# Class for the Navigation panel.
 class Navigation(QWidget) :
-    def __init__(self, tab): # Constructor function.
+    def __init__(self, tab):
         super().__init__()
-        self.setAttribute(Qt.WA_StyledBackground, True) # Ensures the Navigation is rendered.
+        self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet("""
         background-color: rgba(209, 187, 255, 0.6);
         border-radius: 10px;
         """)
 
-        # Layout of the Navigation.
         self._layout = QHBoxLayout()
         self._layout.setSpacing(int(self.width() * 0.05))
         self.setLayout(self._layout)
 
-        # Options within the navgation panel.
+        # The 4 tab options with its connection to the main QTabWidget.
         self._option1 = QPushButton(self)
         self._option1.clicked.connect(lambda: tab.setCurrentIndex(0))
         self._option2 = QPushButton(self)
@@ -28,33 +31,43 @@ class Navigation(QWidget) :
         self._option4 = QPushButton(self)
         self._option4.clicked.connect(lambda: tab.setCurrentIndex(3))
 
-        # Adding the buttons to the layout.
         self._layout.addWidget(self._option1)
         self._layout.addWidget(self._option2)
         self._layout.addWidget(self._option3)
         self._layout.addWidget(self._option4)
     
-    # Function for setting the button style.
-    def _buttonStyle(self, _button, _iconName) :
-        _style = """
+    def _buttonStyle(self, _button, _icon) :
+        """
+        Function is used to simplify the button styling process.
+        As all buttons used the same style, the function can be looped through for styling purposes.
+
+        :param _button: QPushButton widget that is going to be styled.
+        :param _icon: Icon used for the button.
+        """
+
+        _button.setIcon(QIcon(_icon))
+        _button.setStyleSheet(f"""
         QPushButton {{
             background-color: #5000A1;
             border-radius: 15px;
             color: white;
             font-weight: bold;
-            font-size: {}px;
+            font-size: {int(self._option1.height() * 0.3)}px;
         }}
 
         QPushButton:hover {{
             background-color: #321153;
         }}
-        """.format(int(self._option1.height() * 0.3))
-        _button.setIcon(QIcon(_iconName))
-        _button.setStyleSheet(_style)
+        """)
         _button.setCursor(Qt.PointingHandCursor)
-    
-    # Function to ensure the navigation layout and display is responsive to the resizing of the window.
+  
     def resizeEvent(self, event):
+        """
+        Function is used to adjust the layout and display of the navigation bar.
+        This ensures the navigation bar remains visible, understandable and usable.
+        This also ensures the responsiveness of the design regardless of screen size.
+        """
+
         _buttonList = [self._option1, self._option2, self._option3, self._option4]
         _nameList = ["  Performance", "  Tasks To Do", "  Schedule", "  Support"]
         _iconList = ["icon/performance.png", "icon/task.png", "icon/schedule.png", "icon/support.png"]

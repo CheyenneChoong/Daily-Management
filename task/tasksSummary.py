@@ -1,6 +1,3 @@
-# This file contains the widget of the tasks for the daily overview.
-
-# Import modules for UI and database.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -15,13 +12,11 @@ class taskSummary(QWidget):
         border-radius: 10px;
         """)
 
-        # Main layout.
         _mainLayout = QVBoxLayout()
         _mainLayout.setContentsMargins(15, 15, 15, 15)
         _mainLayout.setAlignment(Qt.AlignTop)
         self.setLayout(_mainLayout)
 
-        # Title panel.
         _topPanel = QWidget()
         _topPanel.setStyleSheet("background-color: none;")
         _topPanelLayout = QHBoxLayout()
@@ -54,7 +49,6 @@ class taskSummary(QWidget):
         _topPanelLayout.addWidget(_title, stretch = 1)
         _topPanelLayout.addWidget(_refreshButton, stretch = 0)
 
-        # Content area.
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: none;")
         self._containerLayout = QVBoxLayout()
@@ -76,11 +70,16 @@ class taskSummary(QWidget):
 
         self._refreshData()
 
-        # Add widgets to layout.
         _mainLayout.addWidget(_topPanel, stretch = 0)
         _mainLayout.addWidget(_scroll, stretch = 1)
 
     def _refreshData(self):
+        """
+        Function used to refresh the data being displayed. The data displayed
+        is the progress of the tasks completed by category. The function 
+        removes the old data before displaying the latest data. This ensures
+        the data displayed is accurate and timely.
+        """
         while self._containerLayout.count():
             _widget = self._containerLayout.takeAt(0)
             _widget = _widget.widget()

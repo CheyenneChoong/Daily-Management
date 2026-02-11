@@ -1,15 +1,16 @@
-# This file contains the code that focuses on the display of data and UI.
-# All data handling is done is a separate file.
-
-# Import libraries for UI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import webbrowser
-
-# Import pop up.
 from support.supportPopup import *
 from support.support import *
+
+"""
+mainSupport is the tab display for the tab Support.
+The tab is split into two parts - Emotional State, Support.
+Emotional state focuses on the emotions listed by the user.
+Support focuses on the support the user listed and the emotional 
+state they tie into. 
+"""
 
 class mainSupport(QWidget):
     def __init__(self):
@@ -20,14 +21,12 @@ class mainSupport(QWidget):
         border-radius: 10px;
         """)
 
-        # Set up the main layout.
         _mainLayout = QVBoxLayout()
         _mainLayout.setContentsMargins(25, 25, 25, 25)
         _mainLayout.setSpacing(15)
         _mainLayout.setAlignment(Qt.AlignTop)
         self.setLayout(_mainLayout)
 
-        # Variables containing the styling for certain components.
         _titleStyle = """
         background-color: none;
         color: white;
@@ -56,12 +55,10 @@ class mainSupport(QWidget):
         }
         """
 
-        # Title Panel.
         _mainTitle = QLabel("Emotion Regulator", self)
         _mainTitle.setStyleSheet(_titleStyle + "font-size: 25px;")
         _mainTitle.adjustSize()
 
-        # Section 1 - Emotional State Section.
         _section1 = QWidget(self)
         _section1.setStyleSheet("background-color: none;")
         _layout1 = QHBoxLayout()
@@ -89,7 +86,6 @@ class mainSupport(QWidget):
         _scroll1.setWidget(self._content1)
         _scroll1.setStyleSheet(_scrollStyle)
 
-        # Section 2 - Emotional Support
         _section2 = QWidget(self)
         _section2.setStyleSheet("background-color: none;")
         _layout2 = QHBoxLayout()
@@ -117,7 +113,6 @@ class mainSupport(QWidget):
         _scroll2.setWidget(self._content2)
         _scroll2.setStyleSheet(_scrollStyle)
 
-        # Add all the widgets to the main layout.
         _mainLayout.addWidget(_mainTitle, stretch = 0)
         _mainLayout.addWidget(_section1, stretch = 0)
         _mainLayout.addWidget(_scroll1, stretch = 1)
@@ -140,14 +135,32 @@ class mainSupport(QWidget):
         self._displaySupport()
     
     def resizeEvent(self, event):
+        """
+        Function resizes the pop up to ensure the pop up remains
+        visible and usable.
+        """
         self._newEmotionPopup.setGeometry(self.rect())
         self._newSupportPopup.setGeometry(self.rect())
     
     def eventFilter(self, component, event):
+        """
+        Function refreshes the data being displayed.
+        The function is triggered when the pop up is hidden.
+        This ensures data displayed is accurate and timely.
+        """
         if event.type() == QEvent.Hide:
             self._displayEmotion()
             self._displaySupport()
         return super().eventFilter(component, event)
+
+    """
+    :func displayEmotion: Display the emotional states.
+    :func displaySupport: Display the support.
+
+    Both functions removes the current displayed data to
+    make way for the display of the latest and updated data.
+    This ensure data displayed is timely and accurate.
+    """
 
     def _displayEmotion(self):
         while self._contentLayout1.count():

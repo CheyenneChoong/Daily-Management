@@ -1,5 +1,8 @@
-# Code for setting up the database file if it doesn't exists.
-# Code also ensures the tables are created.
+"""
+The code in this file focuses on ensuring the existance
+of the database and all its table. 
+"""
+
 import sqlite3
 
 _connect = sqlite3.connect("data/database.db")

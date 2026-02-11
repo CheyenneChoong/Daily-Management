@@ -1,15 +1,19 @@
-# This file contains the code for the pop ups in the support system.
-# The code for the data handling is in a separate file but is used here.
-
-# Import libraries for GUI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
-# Import class for backend.
 from support.support import emotionalState, support
 
-# Styling.
+"""
+newEmotion and newSupport are pop ups for create / update data.
+Both classes share the same structure (except different data to process).
+
+:func _create: Create a new data provided the mode is not edit mode otherwise edits the data.
+:func resizeEvent: Resizes the visible container that contains the data. Ensures the display
+is visible and readable.
+:func createMode: Resets the data for create mode.
+:func editMode: Displays the data of the data being edited. 
+"""
+
 _inputStyle = """
 border: 1px solid black;
 height: 40px;
@@ -18,7 +22,6 @@ padding-left: 10px;
 padding-right: 10px;
 """
 
-# Class for add / edit emotional state.
 class newEmotion(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,11 +31,9 @@ class newEmotion(QWidget):
         border-radius: 10px;
         """)
 
-        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
-        # The pop up area (visible in white.)
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
@@ -49,7 +50,6 @@ class newEmotion(QWidget):
         self._emotionInput.setToolTip("Emotional State")
         self._emotionInput.setMaxLength(40)
 
-        # Button panel.
         _buttonPanel = QWidget(self._container)
         _buttonPanel.setStyleSheet("background-color: none;")
         _buttonLayout = QHBoxLayout()
@@ -124,7 +124,6 @@ class newEmotion(QWidget):
         self._actionButton.setText("EDIT")
         self.show()
 
-# Class for add / edit support.
 class newSupport(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -134,11 +133,9 @@ class newSupport(QWidget):
         border-radius: 10px;
         """)
 
-        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
-        # The pop up area (visible in white.)
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
@@ -167,7 +164,6 @@ class newSupport(QWidget):
         """)
         self._emotionInput.setSelectionMode(QAbstractItemView.MultiSelection)
 
-        # Button panel.
         _buttonPanel = QWidget(self._container)
         _buttonPanel.setStyleSheet("background-color: none;")
         _buttonLayout = QHBoxLayout()

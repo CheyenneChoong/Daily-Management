@@ -1,8 +1,25 @@
-# Import database module.
 import sqlite3
 
 class Task():
-    def createTask(self, categoryName, taskName, dueDate, executeDate, priority): # Creates the task.
+    """
+    :func createTask: Add new task.
+    :func editTask: Edit a selected task.
+    :func markTask: Marks a task as done or pending.
+    :func deleteTask: Deletes a selected task.
+    :func _deleteCategory: Checks if the category is needed and deletes if there is no need for the category.
+    :func filterTask: Retrieves information of tasks after appylying filters (if applicable)
+    :func singleTask: Retrieves information of a single task.
+    :func category: Retrieves all the categories.
+    """
+
+    def createTask(self, categoryName, taskName, dueDate, executeDate, priority):
+        """
+        :param categoryName: Name of the category the task is categorized in.
+        :param taskName: Name of the task.
+        :param dueDate: Deadline for the task.
+        :param executeDate: Date when the task should be done.
+        :param priority: Priority of the task.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -20,7 +37,15 @@ class Task():
         _connect.commit()
         _connect.close()
     
-    def editTask(self, taskID, categoryName, taskName, dueDate, executeDate, priority): # Edits the task
+    def editTask(self, taskID, categoryName, taskName, dueDate, executeDate, priority):
+        """
+        :param taskID: ID of the task being edited.
+        :param categoryName: Name of the category the task is categorized in.
+        :param taskName: Name of the task.
+        :param dueDate: Deadline for the task.
+        :param executeDate: Date when the task should be done.
+        :param priority: Priority of the task.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -47,7 +72,11 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def markTask(self, taskID, date): # Mark a task as completed or pending.
+    def markTask(self, taskID, date):
+        """
+        :param taskID: ID of task being edited.
+        :param date: Date of when the task was marked.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -63,7 +92,10 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def deleteTask(self, taskID): # Delete a task.
+    def deleteTask(self, taskID):
+        """
+        :param taskID: ID of the task being deleted.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -72,7 +104,7 @@ class Task():
         _connect.close()
         self._deleteCategory()
     
-    def _deleteCategory(self): # Delete category.
+    def _deleteCategory(self):
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -85,7 +117,12 @@ class Task():
         _connect.commit()
         _connect.close()
     
-    def filterTask(self, filterCode): # Return the list of task based on the filter.
+    def filterTask(self, filterCode):
+        """
+        :param filterCode: List of the filter code and the filter parameters.
+        The filter code is a 3 digit code to filter based on priority, executeDate
+        and categoryName. 
+        """
         _filter = {"category": f"c.categoryName = '{filterCode[1]}'", 
                    "date": f"t.executeDate = '{filterCode[2]}'", 
                    "priority": f"t.priority = '{filterCode[3]}'"}
@@ -113,7 +150,10 @@ class Task():
         _connect.close()
         return _data
 
-    def singleTask(self, taskID): # Return the data of a single task.
+    def singleTask(self, taskID):
+        """
+        :param taskID: ID of the task being selected.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -127,7 +167,7 @@ class Task():
         _connect.close()
         return _data
 
-    def category(self): # Return the list of categories.
+    def category(self):
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _sql = _cursor.execute("SELECT categoryName FROM category")

@@ -7,17 +7,25 @@ import random
 import threading
 
 def Notify(message):
-    try:
-        _toaster = WindowsToaster("Daily Management")
-        _toast = Toast()
-        _toast.text_fields = ["BTS", message]
-        _toast.images.append(ToastDisplayImage(ToastImage("icon/bts.png"), "BTS", ToastImagePosition.AppLogo, True))
-        _toaster.show_toast(_toast)
-    except Exception as e:
-        print(f"Exception: {e}")
+    """
+    Function used to send out a toast notification to the user.
+    Notifies the user even though the application is not in focus.
+
+    :param message: The message that is going to be displayed.
+    """
+    _toaster = WindowsToaster("Daily Management")
+    _toast = Toast()
+    _toast.text_fields = ["BTS", message]
+    _toast.images.append(ToastDisplayImage(ToastImage("icon/bts.png"), "BTS", ToastImagePosition.AppLogo, True))
+    _toaster.show_toast(_toast)
 
 class Notification(QWidget) :
     def __init__(self):
+        """
+        The display structure is similar to a chat box 
+        except this one is a one way chat box - only the receiving messages not sending.
+        """
+
         super().__init__()
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet("""
@@ -49,6 +57,13 @@ class Notification(QWidget) :
         """)
         self._layout.addWidget(_scroll)
 
+        """
+        Try-except is used to check the existance of the log.txt file
+        and creates if the file is not found. The first line of the file
+        is read and checked to indicate if the file has the data for the current 
+        day or is still referring to the previous day. Rewrite of the file is 
+        done to update it to the current day if necessary.
+        """
         try:
             _check = open("data/log.txt", "r")
             _check.close()
@@ -58,15 +73,19 @@ class Notification(QWidget) :
 
         with open("data/log.txt", "r") as _file:
             _check = _file.readline().strip().split("|")[0]
-            if not _check or QDate.fromString(_check, "M/d/yyyy") != QDate.currentDate():
+            if not _check or QDate.fromString(_check, "d/M/yyyy") != QDate.currentDate():
                 _rewrite = True
             else:
                 _rewrite = False
         
         if _rewrite:
             with open("data/log.txt", "w") as _file:
-                _file.write(f"{QDate.toString(QDate.currentDate(), "M/d/yyyy")}|Today is {QDate.toString(QDate.currentDate(), "dddd, d MMMM yyyy")}.\n")
+                _file.write(f"{QDate.toString(QDate.currentDate(), "d/M/yyyy")}|Today is {QDate.toString(QDate.currentDate(), "dddd, d MMMM yyyy")}.\n")
         
+        """
+        Functions are called as a way to check for the latest update upon launch.
+        Timer is used to do periodical check for updates.
+        """
         self._overview()
         self._refresh()
         self._timer = QTimer()
@@ -74,6 +93,16 @@ class Notification(QWidget) :
         self._timer.start(10000)
 
     def _display(self):
+        """
+        Function used to display the notification is a chat message style.
+        The functions clears the current display of messages to make way 
+        for the updated ones.
+
+        The log.txt file is read and the message display created and added
+        to the layout. An endWidget is created to ocupy the remaining space
+        if the messages are not long enough to cause the widget to need to 
+        scroll.
+        """
         while self._contentLayout.count():
             _message = self._contentLayout.takeAt(0)
             _message = _message.widget()
@@ -108,11 +137,16 @@ class Notification(QWidget) :
         self._contentLayout.addWidget(_endWidget, stretch = 10)
     
     def _overview(self):
+        """
+        Function that summarizes the total number of tasks to be completed
+        and the total events schedule for the day. The overview is displayed
+        every time the application is launched.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
-        _tasks = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "M/d/yyyy")}';")
+        _tasks = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _tasks = _tasks.fetchone()
-        _events = _cursor.execute(f"SELECT COUNT(event) FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "M/d/yyyy")}%';")
+        _events = _cursor.execute(f"SELECT COUNT(event) FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "d/M/yyyy")}%';")
         _events = _events.fetchone()
         with open("data/log.txt", "a") as _file:
             _file.write(f"overview|{QDateTime.toString(QDateTime.currentDateTime(), "h:mm AP")} Totals tasks to complete today is {_tasks[0]}. Events scheduled for today is {_events[0]}.\n")
@@ -120,23 +154,36 @@ class Notification(QWidget) :
         _connect.close()
     
     def _refresh(self):
+        """
+        Function that is called by QTimer.
+        It runs the functions needed to be
+        executed.
+        """
         self._progress()
         self._events()
         self._display()
 
     def _progress(self):
+        """
+        Function calculates the user's progress on completing
+        the tasks for the current day. Each milestones the user
+        hits would be logged in the log.txt file and displayed
+        as a message in the notification area. Toast notification
+        is not used for this.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
 
-        _completed = _cursor.execute(f"SELECT COUNT(completionDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "M/d/yyyy")}';")
+        _completed = _cursor.execute(f"SELECT COUNT(completionDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _completed = _completed.fetchone()
-        _total = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "M/d/yyyy")}';")
+        _total = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _total = _total.fetchone()
         if _total[0] > 0:
             _taskProgress = int(_completed[0] / _total[0] * 100)
         else:
             _taskProgress = 0
 
+        # Milestone checker.
         if _taskProgress == 25:
             _key = "T25%"
         elif _taskProgress > 25 and _taskProgress <= 50:
@@ -155,7 +202,8 @@ class Notification(QWidget) :
                     _write = False
                     break
                 _write = True
-            
+
+        # Randomly selects a support to be recommended to the user.   
         if _write:
             with open("data/log.txt", "a") as _file:
                 _file.write(f"{_key}|You have completed {_taskProgress}% of the tasks needed to be completed today.\n")
@@ -170,20 +218,27 @@ class Notification(QWidget) :
         _connect.close()
     
     def _events(self):
+        """
+        Function checks what events are scheduled for the day and
+        calculates the time difference between the scheduled time and 
+        current time. The display message and notification message is 
+        then displayed and logged in log.txt. 
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
-        _allEvent = _cursor.execute(f"SELECT * FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "M/d/yyyy")}%';")
+
+        _allEvent = _cursor.execute(f"SELECT * FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "d/M/yyyy")}%';")
         _allEvent = _allEvent.fetchall()
         _messages = []
         _notify = []
         for _event in _allEvent:
-            _time = QDateTime.fromString(_event[2], "M/d/yyyy h:mm AP")
+            _time = QDateTime.fromString(_event[2], "d/M/yyyy h:mm AP")
             _current = QDateTime.currentDateTime()
             _difference = _current.secsTo(_time) // 60
-            if _difference <= 60 and _difference >= 0:
+            if _difference <= 60 and _difference >= 0: # Checks if event is within an hour.
                 _messages.append([f"S{_event[0]}Before", f"You have {_event[1]} at {_event[2]} scheduled in {_difference} minutes."])
                 _notify.append(f"You have {_event[1]} at {_event[2]} scheduled in {_difference} minutes.")
-            elif _difference < -60:
+            elif _difference < -60: # Checks if the event has already been completed - assumption after an hour.
                 _emotions = _cursor.execute(f"SELECT emotionID FROM scheduleState WHERE scheduleID = {_event[0]};")
                 _emotions = _emotions.fetchall()
                 _supportList = []

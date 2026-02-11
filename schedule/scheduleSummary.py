@@ -1,11 +1,6 @@
-# This file contains the widget of the schedule for the daily overview.
-
-# Import modules for UI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
-# Import the class that handles data.
 from schedule.schedule import schedule
 
 class scheduleSummary(QWidget):
@@ -17,13 +12,11 @@ class scheduleSummary(QWidget):
         border-radius: 10px;
         """)
 
-        # Main layout.
         _mainLayout = QVBoxLayout()
         _mainLayout.setContentsMargins(15, 15, 15, 15)
         _mainLayout.setAlignment(Qt.AlignTop)
         self.setLayout(_mainLayout)
 
-        # Title panel.
         _topPanel = QWidget()
         _topPanel.setStyleSheet("background-color: none;")
         _topPanelLayout = QHBoxLayout()
@@ -58,7 +51,6 @@ class scheduleSummary(QWidget):
         _refreshButton.clicked.connect(self._refreshData)
         _topPanelLayout.addWidget(_refreshButton, stretch = 0)
 
-        # Container.
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: none;")
         self._containerLayout = QVBoxLayout()
@@ -80,18 +72,22 @@ class scheduleSummary(QWidget):
 
         self._refreshData()
 
-        # Add widgets to layout.
         _mainLayout.addWidget(_topPanel, stretch = 0)
         _mainLayout.addWidget(_scroll, stretch = 1)
 
     def _refreshData(self):
+        """
+        Function refreshes the data being displayed. The already displayed events
+        are removed to make way for the latest data to be displayed. This ensures
+        the data displayed is accurate and timely. 
+        """
         while self._containerLayout.count():
             _widget = self._containerLayout.takeAt(0)
             _widget = _widget.widget()
             _widget.deleteLater()
 
         _retriever = schedule()
-        _todayEvents = _retriever.getSchedule(QDate.toString(QDate.currentDate(), "MM/dd/yyyy"))
+        _todayEvents = _retriever.getSchedule(QDate.toString(QDate.currentDate(), "dd/MM/yyyy"))
         for _event in _todayEvents:
             _widget = QWidget(self._container)
             _widget.setStyleSheet("background-color: white")

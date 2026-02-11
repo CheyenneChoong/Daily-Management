@@ -1,12 +1,6 @@
-# This file contains the code focused on displaying the schedule feature.
-# Data handling is done in a separate file.
-
-# Import modules for UI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
-# Import pop up and editor.
 from schedule.schedulePopup import newSchedule
 from schedule.schedule import schedule
 
@@ -19,14 +13,12 @@ class mainSchedule(QWidget):
         border-radius: 10px;
         """)
 
-        # Set up the main layout.
         _mainLayout = QVBoxLayout()
         _mainLayout.setContentsMargins(25, 25, 25, 25)
         _mainLayout.setSpacing(15)
         _mainLayout.setAlignment(Qt.AlignTop)
         self.setLayout(_mainLayout)
 
-        # Variables containing the styling for certain components.
         _titleStyle = """
         background-color: none;
         color: white;
@@ -62,12 +54,10 @@ class mainSchedule(QWidget):
         padding-right: 10px;
         """
 
-        # Title Panel.
         _title = QLabel("Schedule", self)
         _title.setStyleSheet(_titleStyle + "font-size: 25px;")
         _title.adjustSize()
         
-        # Calendar widget.
         self._calendar = QCalendarWidget(self)
         self._calendar.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
         self._calendar.setStyleSheet("""
@@ -78,9 +68,8 @@ class mainSchedule(QWidget):
             background-color: purple;
         }
         """)
-        self._calendar.clicked.connect(lambda: self._displaySchedule(self._scheduleEditor.getSchedule(self._calendar.selectedDate().toString("MM/dd/yyyy"))))
+        self._calendar.clicked.connect(lambda: self._displaySchedule(self._scheduleEditor.getSchedule(self._calendar.selectedDate().toString("dd/MM/yyyy"))))
 
-        # Add and filter panel.
         _panel = QWidget(self)
         _panelLayout = QHBoxLayout()
         _panelLayout.setContentsMargins(0, 0, 0, 0)
@@ -101,7 +90,6 @@ class mainSchedule(QWidget):
         _panelLayout.addWidget(self._searchInput)
         _panelLayout.addWidget(_searchButton)
 
-        # Container for displaying the events.
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: none;")
         self._containerLayout = QVBoxLayout()
@@ -113,13 +101,11 @@ class mainSchedule(QWidget):
         _scroll.setWidget(self._container)
         _scroll.setStyleSheet(_scrollStyle)
 
-        # Add widgets to mainlayout.
         _mainLayout.addWidget(_title, stretch=0)
         _mainLayout.addWidget(self._calendar, stretch=1)
         _mainLayout.addWidget(_panel, stretch=0)
         _mainLayout.addWidget(_scroll, stretch=1)
 
-        # Pop up.
         self._newSchedulePopup = newSchedule(self)
         self._newSchedulePopup.hide()
         self._newSchedulePopup.installEventFilter(self)
@@ -129,15 +115,30 @@ class mainSchedule(QWidget):
         self._displaySchedule(self._scheduleEditor.getSchedule(False))
     
     def resizeEvent(self, event):
+        """
+        Resizes the pop up according to the screen size
+        to ensure visibility and readability.
+        """
         self._newSchedulePopup.setGeometry(self.rect())
     
     def eventFilter(self, component, event):
+        """
+        Refreshes the data after the pop up is hidden to
+        ensure the data displayed are up to date and 
+        timely.
+        """
         if event.type() == QEvent.Hide:
             _search = self._searchInput.text().strip()
             self._displaySchedule(self._scheduleEditor.getSchedule(_search))
         return super().eventFilter(component, event)
     
     def _displaySchedule(self, scheduleData):
+        """
+        Removes the old data being displayed and displays
+        the latest schedule data. Ensures timely and accurate
+        data display. Each widget provides an edit and delete 
+        option.
+        """
         _allSchedule = scheduleData
         while self._containerLayout.count():
             _data = self._containerLayout.takeAt(0)
@@ -145,7 +146,7 @@ class mainSchedule(QWidget):
             _widget.deleteLater()
 
         for _data in _allSchedule:
-            _highlightDateTime = QDateTime.fromString(_data[2], "MM/dd/yyyy h:mm AP")
+            _highlightDateTime = QDateTime.fromString(_data[2], "dd/MM/yyyy h:mm AP")
             _highlightDate = _highlightDateTime.date()
             _format = QTextCharFormat()
             _format.setBackground(QBrush(QColor("#B49DE5")))

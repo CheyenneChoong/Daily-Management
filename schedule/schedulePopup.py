@@ -1,12 +1,6 @@
-# This file contains the code for the schedule pop up.
-# This file focuses on the UI. Data handling is done in a separate file.
-
-# Import modules for UI.
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
-# Import the backend class.
 from schedule.schedule import *
 from support.support import emotionalState
 
@@ -19,7 +13,6 @@ class newSchedule(QWidget):
         border-radius: 10px;
         """)
 
-        # Styling.
         _inputStyle = """
         border: 1px solid black;
         height: 40px;
@@ -58,11 +51,9 @@ class newSchedule(QWidget):
         }
         """
 
-        # Main layout.
         _mainLayout = QGridLayout()
         self.setLayout(_mainLayout)
 
-        # The pop up area (visible in white.)
         self._container = QWidget(self)
         self._container.setStyleSheet("background-color: white")
         _containerLayout = QVBoxLayout()
@@ -87,7 +78,7 @@ class newSchedule(QWidget):
         self._dateTimeInput.setStyleSheet(_dateStyle)
         self._dateTimeInput.setCalendarPopup(True)
         self._dateTimeInput.setDateTime(QDateTime.currentDateTime())
-        self._dateTimeInput.setDisplayFormat("MM/dd/yyyy h:mm AP")
+        self._dateTimeInput.setDisplayFormat("dd/MM/yyyy h:mm AP")
         _calendar = self._dateTimeInput.calendarWidget()
         _calendar.setStyleSheet(_calendarStyle)
         self._emotionInput = QListWidget(self._container)
@@ -99,7 +90,6 @@ class newSchedule(QWidget):
         """)
         self._emotionInput.setSelectionMode(QAbstractItemView.MultiSelection)
 
-        # Button panel.
         _buttonPanel = QWidget(self._container)
         _buttonPanel.setStyleSheet("background-color: none;")
         _buttonLayout = QHBoxLayout()
@@ -151,6 +141,11 @@ class newSchedule(QWidget):
         self._scheduleID = 0
 
     def _create(self):
+        """
+        Function for adding / updating an event. The data is processed
+        and checked if null before added into the database to 
+        avoid errors. Pop up hides if no error is found.
+        """
         _event = self._eventInput.text().strip()
         _venue = self._venueInput.text().strip()
         _dateTime = self._dateTimeInput.text().strip()
@@ -169,9 +164,19 @@ class newSchedule(QWidget):
         self.hide()
     
     def resizeEvent(self, event):
+        """
+        Functions resizes the container that contains the visible part
+        of the pop up. This ensures the pop up is visible, usable and 
+        accessible. This also ensures design consistency.
+        """
         self._container.setFixedSize(int(self.width() * 0.63), int(self.height() * 0.5))
     
     def createMode(self):
+        """
+        Function that resets the pop up inputs for a create mode.
+        This ensures no remainder data was left behind after edit mode
+        if edit mode was in use.
+        """
         self._title.setText("Add Event")
         self._eventInput.setText("")
         self._venueInput.setText("")
@@ -185,12 +190,18 @@ class newSchedule(QWidget):
         self.show()
     
     def editMode(self, scheduleID):
+        """
+        Function that sets the pop up inputs for edit mode. 
+        Displays the data of the event being edited. 
+
+        :param scheduleID: The event being edited. 
+        """
         self._scheduleID = scheduleID
         _eventData = self._scheduleEditor.singleSchedule(scheduleID)
         self._title.setText("Edit Event")
         self._eventInput.setText(_eventData[1])
         self._venueInput.setText(_eventData[3])
-        self._dateTimeInput.setDateTime(QDateTime.fromString(_eventData[2], "MM/dd/yyyy h:mm AP"))
+        self._dateTimeInput.setDateTime(QDateTime.fromString(_eventData[2], "dd/MM/yyyy h:mm AP"))
         _emotionList = self._emotionEditor.emotion()
         _scheduleEmotion = self._scheduleEditor.emotions(scheduleID)
         self._emotionInput.clear()

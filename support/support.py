@@ -1,8 +1,23 @@
-# This file handles the data management and connection to the database for this feature.
-# Import library for SQL.
 import sqlite3
 
+"""
+emotionalState: Used for CRUD related to the emotion table.
+support: Used for CRUD related to the supports and the emotions its tied to.
+"""
+
 class emotionalState():
+    """
+    :func create: Adds a new emotional state.
+        :param emotionInput: Name of the emotional state. Example: Happy
+    :func edit: Edits the emotional state.
+        :param emotionID: ID of the emotional state being edited.
+        :param emotionInput: Name of the emotional state.
+    :func delete: Deletes an emotional state.
+        :param emotionID: ID of the emotional state being deleted.
+    :func emotion: Retrieves information of all emotional state in the database.
+    :func singleEmotion: Retrieves information of an emotional state that is being selected.
+        :param emotionID: ID of the emotional state being selected.
+    """
     def create(self, emotionInput):
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
@@ -46,7 +61,20 @@ class emotionalState():
         return _data
 
 class support():
+    """
+    :func create: Add support and link it with the emotional state.
+    :func edit: Edit the support.
+    :func delete: Delete the support.
+    :func allSupport: Retrieves information of all the support.
+    :func singleSupport: Retrieves information of a selected support.
+    :func emotions: Retrieves the emotionIDs linked to a support.
+    """
     def create(self, name, link, emotionalState):
+        """
+        :param name: Name of the support. Example: Run Music Video
+        :param link: Link to the support. Example: YouTube link, PDF link
+        :param emotionalState: List of emotionIDs connected to the support.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -58,6 +86,12 @@ class support():
         _connect.close()
     
     def edit(self, supportID, name, link, emotionalState):
+        """
+        :param supportID: ID of the selected support to be edited.
+        :param name: Name of the support. Example: Run Music Video
+        :param link: Link to the support. Example: YouTube link, PDF link
+        :param emotionalState: List of emotionIDs connected to the support.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -78,6 +112,9 @@ class support():
         _connect.close()
     
     def delete(self, supportID):
+        """
+        :param supportID: ID of the support being deleted.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -95,6 +132,9 @@ class support():
         return _supportData
     
     def singleSupport(self, supportID):
+        """
+        :param supportID: ID of the support being selected.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _supportData = _cursor.execute(f"SELECT * FROM support WHERE supportID = {supportID};")
@@ -104,6 +144,9 @@ class support():
         return _supportData
 
     def emotions(self, supportID):
+        """
+        :param supportID: ID of the support being selected.
+        """
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
