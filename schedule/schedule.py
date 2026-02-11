@@ -56,6 +56,14 @@ class schedule():
         for _emotionID in emotionalState:
             _cursor.execute(f"INSERT INTO scheduleState (scheduleID, emotionID) VALUES ({scheduleID}, {_emotionID});")
 
+        with open("data/log.txt", "r") as _file:
+            _current = _file.readlines()
+        
+        with open("data/log.txt", "w") as _file:
+            for _line in _current:
+                if f"S{scheduleID}" not in _line.split("|")[0]:
+                    _file.write(_line)
+
         _connect.commit()
         _connect.close()
     

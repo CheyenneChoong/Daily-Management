@@ -1,3 +1,22 @@
 11/2/2026|Today is Wednesday, 11 February 2026.
-overview|12:14 PM Totals tasks to complete today is 0. Events scheduled for today is 1.
-S21After|How was test? Here is some emotional support for you. .
+overview|5:20 PM Totals tasks to complete today is 5. Events scheduled for today is 4.
+S1Before|You have Event 1 at 11/02/2026 5:25 PM scheduled in 4 minutes.
+S2Before|You have Event 2 at 11/02/2026 6:00 PM scheduled in 39 minutes.
+S3After|How was Event 3?  
+S4After|How was Event 4? Here is some emotional support for you. <a href='https://www.youtube.com/watch?v=38k5zr1e0HI' style='color: purple; text-decoration: none'>Magic Shop</a>.
+T25%|You have completed 40% of the tasks needed to be completed today.
+support|Here's a recommended support for you. <a href='https://www.youtube.com/watch?v=xEeFrLSkMm8' style='color: purple; text-decoration: none'>Spring Day</a>
+T50%|You have completed 60% of the tasks needed to be completed today.
+support|Here's a recommended support for you. <a href='https://www.youtube.com/watch?v=I47TUcJj9po' style='color: purple; text-decoration: none'>Cypher Pt. 3</a>
+T75%|You have completed 80% of the tasks needed to be completed today.
+support|Here's a recommended support for you. <a href='https://www.youtube.com/watch?v=xEeFrLSkMm8' style='color: purple; text-decoration: none'>Spring Day</a>
+T100%|You have completed 100% of the tasks needed to be completed today.
+support|Here's a recommended support for you. <a href='https://www.youtube.com/watch?v=xEeFrLSkMm8' style='color: purple; text-decoration: none'>Spring Day</a>
+overview|5:31 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:34 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:35 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:37 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:39 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:39 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+overview|5:40 PM Totals tasks to complete today is 5. Events scheduled for today is 5.
+S6Before|You have Event 5 at 11/02/2026 6:41 PM scheduled in 59 minutes.

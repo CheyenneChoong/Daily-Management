@@ -43,10 +43,10 @@ class Notification(QWidget) :
         self._contentLayout.setAlignment(Qt.AlignTop)
         self._content.setLayout(self._contentLayout)
 
-        _scroll = QScrollArea()
-        _scroll.setWidgetResizable(True)
-        _scroll.setWidget(self._content)
-        _scroll.setStyleSheet("""
+        self._scroll = QScrollArea()
+        self._scroll.setWidgetResizable(True)
+        self._scroll.setWidget(self._content)
+        self._scroll.setStyleSheet("""
         QScrollArea {
             background-color: transparent;
         } 
@@ -55,7 +55,7 @@ class Notification(QWidget) :
             width: 4px; 
         }
         """)
-        self._layout.addWidget(_scroll)
+        self._layout.addWidget(self._scroll)
 
         """
         Try-except is used to check the existance of the log.txt file
@@ -128,6 +128,8 @@ class Notification(QWidget) :
                 border-radius: 10px;
                 padding: 10px;
                 """)
+                _text.setOpenExternalLinks(True)
+                _text.setTextInteractionFlags(Qt.TextBrowserInteraction)
                 _text.setWordWrap(True)
                 _messageLayout.addWidget(_text, stretch = 1, alignment=Qt.AlignTop)
                 self._contentLayout.addWidget(_message, stretch = 1, alignment=Qt.AlignTop)
@@ -135,6 +137,7 @@ class Notification(QWidget) :
         _endWidget = QWidget(self._content)
         _endWidget.setStyleSheet("background-color: none;")
         self._contentLayout.addWidget(_endWidget, stretch = 10)
+        QTimer.singleShot(1000, lambda: self._scroll.verticalScrollBar().setValue(self._scroll.verticalScrollBar().maximum()))
     
     def _overview(self):
         """
@@ -146,7 +149,7 @@ class Notification(QWidget) :
         _cursor = _connect.cursor()
         _tasks = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _tasks = _tasks.fetchone()
-        _events = _cursor.execute(f"SELECT COUNT(event) FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "d/M/yyyy")}%';")
+        _events = _cursor.execute(f"SELECT COUNT(event) FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "dd/MM/yyyy")}%';")
         _events = _events.fetchone()
         with open("data/log.txt", "a") as _file:
             _file.write(f"overview|{QDateTime.toString(QDateTime.currentDateTime(), "h:mm AP")} Totals tasks to complete today is {_tasks[0]}. Events scheduled for today is {_events[0]}.\n")
@@ -184,11 +187,11 @@ class Notification(QWidget) :
             _taskProgress = 0
 
         # Milestone checker.
-        if _taskProgress == 25:
+        if _taskProgress >= 25 and _taskProgress <= 50:
             _key = "T25%"
-        elif _taskProgress > 25 and _taskProgress <= 50:
-            _key = "T50%"
         elif _taskProgress > 50 and _taskProgress <= 75:
+            _key = "T50%"
+        elif _taskProgress > 75 and _taskProgress <= 95:
             _key = "T75%"
         elif _taskProgress == 100:
             _key = "T100%"
@@ -212,7 +215,7 @@ class Notification(QWidget) :
                 if len(_allSupport) > 0:
                     _random = random.randint(1, len(_allSupport))
                     _support = _allSupport[_random-1]
-                    _file.write(f"support|Here's a recommended support for you. <a href='{_support[1]}' style='color: purple; text-decoration: none'>{_support[0]}</a>.\n")
+                    _file.write(f"support|Here's a recommended support for you. <a href='{_support[1]}' style='color: purple; text-decoration: none'>{_support[0]}</a>\n")
 
         _connect.commit()
         _connect.close()
@@ -227,7 +230,7 @@ class Notification(QWidget) :
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
 
-        _allEvent = _cursor.execute(f"SELECT * FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "d/M/yyyy")}%';")
+        _allEvent = _cursor.execute(f"SELECT * FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "dd/MM/yyyy")}%';")
         _allEvent = _allEvent.fetchall()
         _messages = []
         _notify = []
@@ -251,7 +254,7 @@ class Notification(QWidget) :
                         _random = random.randint(1, len(_allSupport))
                         _support = _allSupport[_random-1]
                         _supportList.append(f"<a href='{_support[1]}' style='color: purple; text-decoration: none'>{_support[0]}</a>.")
-                    _messages.append([f"S{_event[0]}After", f"How was {_event[1]}? Here is some emotional support for you. {",".join(_supportList)}."])
+                    _messages.append([f"S{_event[0]}After", f"How was {_event[1]}? {"Here is some emotional support for you." if len(_supportList) > 0 else ""} {",".join(_supportList)}"])
                     _notify.append(f"How was {_event[1]}?")
 
         with open("data/log.txt", "r") as _file:

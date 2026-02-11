@@ -8,10 +8,13 @@
 #     data = cursor.execute(sql)
 #     print(data.fetchall())
 
-from windows_toasts import WindowsToaster, Toast
+# from windows_toasts import WindowsToaster, Toast
 
-toaster = WindowsToaster("Python App")
-toast = Toast()
-toast.text_fields = ["Hello", "Test"]
-toast.on_activated = lambda _: print("Toast clciked")
-toaster.show_toast(toast)
+# toaster = WindowsToaster("Python App")
+# toast = Toast()
+# toast.text_fields = ["Hello", "Test"]
+# toast.on_activated = lambda _: print("Toast clciked")
+# toaster.show_toast(toast)
+
+if "S12" in "S124":
+    print("True")
