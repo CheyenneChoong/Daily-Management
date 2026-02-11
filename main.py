@@ -1,3 +1,12 @@
+"""
+Daily Management Project
+main.py serves as the starting point of the system (launch file).
+"""
+
+"""
+Libraries / modules needed for designing and creating the GUI are imported.
+The main display classes from each feature / component is imported to be connected through the main file.
+"""
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -12,26 +21,33 @@ from performance.performanceDisplay import mainPerformance
 
 app = QApplication(sys.argv)
 
+"""
+Main class serves as the base / main window.
+All the widgets are layered in this main window.
+"""
 class Main(QMainWindow) :
-    def __init__(self): # Constructor function.
-        super().__init__()
+    def __init__(self):
+        """
+        Central widget is created to allow for the usage of GridLayout.
+        3 main sections are created using the main display class of their sections and added into the layout
+        The main area utilizes a tab widget to make the switch in tabs smooth.
+        Each features' main display is added into the tab widget as its own tab option.
+        """
 
+        super().__init__()
         self.setWindowTitle('Daily Management')
         self.background = QPixmap('icon/background.png')
         self.setMinimumHeight(900)
         self.setWindowIcon(QIcon('icon/bts.png'))
         self.showMaximized()
 
-        # Central Widget
         central = QWidget()
         self.setCentralWidget(central)
         
-        # Sets layout for the areas.
         self._layout = QGridLayout()
         self._layout.setSpacing(20)
         central.setLayout(self._layout)
 
-        # Main area.
         self._mainArea = QTabWidget()
         self._mainArea.tabBar().hide()
         self._mainArea.setStyleSheet("""
@@ -45,16 +61,25 @@ class Main(QMainWindow) :
         self._mainArea.addTab(mainSchedule(), "Schedule")
         self._mainArea.addTab(mainSupport(), "Support")
 
-        # Navigation and notification component.
         self._navigationArea = Navigation(self._mainArea)
         self._notificationArea = Notification()
     
-    def paintEvent(self, event): # Function that adjusts the background based on the screen size.
+    def paintEvent(self, event):
+        """
+        Function is used to scale the background image to ensure 
+        no matter what size window, the background image does not 
+        look distorted and ensures consistency in the design.
+        """
         painter = QPainter(self)
         scaled = self.background.scaled(self.size())
         painter.drawPixmap(0, 0, scaled)
 
-    def resizeEvent(self, event): # Function that adjusts the layout based on the window size.
+    def resizeEvent(self, event):
+        """
+        Function is used to adjust the layout consistently based on
+        the screen size. This ensures all components remain visible
+        and design remains consistent regardless screen size.
+        """
         if hasattr(self, "_layout"):
             _leftRight = int(self.width() * 0.04)
             _topBottom = int(self.height() * 0.04)
@@ -74,8 +99,5 @@ class Main(QMainWindow) :
             self._layout.addWidget(self._notificationArea, 0, 0, 1, 1)
             self._layout.addWidget(self._mainArea, 1, 0, 8, 1)
 
-# Launch the main class.
 window = Main()
-
-# Ensure the application exits when needed.
 sys.exit(app.exec_())
