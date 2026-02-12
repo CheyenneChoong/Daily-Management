@@ -20,6 +20,7 @@ from schedule.scheduleDisplay import mainSchedule
 from performance.performanceDisplay import mainPerformance
 
 app = QApplication(sys.argv)
+app.setWindowIcon(QIcon('icon/bts.png'))
 
 """
 Main class serves as the base / main window.
