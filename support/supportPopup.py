@@ -48,7 +48,6 @@ class newEmotion(QWidget):
         self._emotionInput.setStyleSheet(_inputStyle)
         self._emotionInput.setPlaceholderText("Emotional State")
         self._emotionInput.setToolTip("Emotional State")
-        self._emotionInput.setMaxLength(40)
 
         _buttonPanel = QWidget(self._container)
         _buttonPanel.setStyleSheet("background-color: none;")
@@ -150,7 +149,6 @@ class newSupport(QWidget):
         self._supportInput.setStyleSheet(_inputStyle)
         self._supportInput.setPlaceholderText("Support")
         self._supportInput.setToolTip("Support")
-        self._supportInput.setMaxLength(40)
         self._linkInput = QLineEdit(self._container)
         self._linkInput.setStyleSheet(_inputStyle)
         self._linkInput.setPlaceholderText("Link")

@@ -83,7 +83,6 @@ class newTask(QWidget):
         self._taskInput.setStyleSheet(_inputStyle)
         self._taskInput.setPlaceholderText("Task Name")
         self._taskInput.setToolTip("Task Name")
-        self._taskInput.setMaxLength(35)
         self._categoryInput = QComboBox()
         self._categoryInput.setStyleSheet(_dropdownStyle)
         self._categoryInput.setEditable(True)

@@ -124,7 +124,6 @@ class mainTask(QWidget) :
         _allTask = data
         for _data in _allTask:
             _task = QWidget(self._contentArea)
-            _task.setMaximumHeight(65)
             _task.setStyleSheet("background-color: white")
             _taskLayout = QHBoxLayout()
             _taskLayout.setContentsMargins(25, 0, 25, 0)
@@ -155,8 +154,10 @@ class mainTask(QWidget) :
             _detail.setLayout(_detailLayout)
             _taskName = QLabel(_data[2], _task)
             _taskName.setStyleSheet("font-weight: bold; font-size: 18px")
+            _taskName.setWordWrap(True)
             _taskDetail = QLabel(f"{_data[8]}, Due Date: {_data[3]}")
             _taskDetail.setStyleSheet("font-size: 12px")
+            _taskDetail.setWordWrap(True)
             _detailLayout.addWidget(_taskName)
             _detailLayout.addWidget(_taskDetail)
             _taskLayout.addWidget(_detail, stretch=1)

@@ -171,7 +171,6 @@ class mainSupport(QWidget):
         _allEmotion = self._emotionEditor.emotion()
         for _data in _allEmotion:
             _emotion = QWidget(self._content1)
-            _emotion.setMaximumHeight(65)
             _emotion.setStyleSheet("background-color: white")
             _emotionLayout = QHBoxLayout()
             _emotionLayout.setContentsMargins(25, 0, 25, 0)
@@ -179,6 +178,7 @@ class mainSupport(QWidget):
 
             _emotionalState = QLabel(_data[1], _emotion)
             _emotionalState.setStyleSheet("font-weight: bold; font-size: 18px;")
+            _emotionalState.setWordWrap(True)
             _emotionLayout.addWidget(_emotionalState, stretch = 1)
 
             _button = QWidget(_emotion)
@@ -207,7 +207,6 @@ class mainSupport(QWidget):
         _allSupport = self._supportEditor.allSupport()
         for _data in _allSupport:
             _support = QWidget(self._content2)
-            _support.setMaximumHeight(65)
             _support.setStyleSheet("background-color: white")
             _supportLayout = QHBoxLayout()
             _supportLayout.setContentsMargins(25, 0, 25, 0)
@@ -217,6 +216,7 @@ class mainSupport(QWidget):
             _name.setOpenExternalLinks(True)
             _name.setTextInteractionFlags(Qt.TextBrowserInteraction)
             _name.setStyleSheet("font-weight: bold; font-size: 18px;")
+            _name.setWordWrap(True)
             _supportLayout.addWidget(_name, stretch=1)
 
             _button = QWidget(_support)

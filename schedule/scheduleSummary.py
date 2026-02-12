@@ -97,8 +97,10 @@ class scheduleSummary(QWidget):
 
             _eventName = QLabel(_event[1], _widget)
             _eventName.setStyleSheet("font-weight: bold; font-size: 18px;")
+            _eventName.setWordWrap(True)
             _eventDetail = QLabel(f"{_event[2]}, Venue: {_event[3]}")
             _eventDetail.setStyleSheet("font-size: 12px;")
+            _eventDetail.setWordWrap(True)
             _widgetLayout.addWidget(_eventName)
             _widgetLayout.addWidget(_eventDetail)
             self._containerLayout.addWidget(_widget)

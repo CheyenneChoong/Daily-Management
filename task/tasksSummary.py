@@ -105,6 +105,7 @@ class taskSummary(QWidget):
 
             _categoryName = QLabel(_category[1], _widget)
             _categoryName.setStyleSheet("font-weight: bold; font-size: 16px")
+            _categoryName.setWordWrap(True)
             _calculate = int(_status[0] / (_status[0] + _status[1]) * 100)
             _progress = QLabel(str(f"{_calculate}%"), _widget)
             _progress.setStyleSheet(f"""

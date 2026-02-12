@@ -154,7 +154,6 @@ class mainSchedule(QWidget):
             self._calendar.setDateTextFormat(_highlightDate, _format)
 
             _schedule = QWidget(self._container)
-            _schedule.setMaximumHeight(65)
             _schedule.setStyleSheet("background-color: white")
             _scheduleLayout = QHBoxLayout()
             _scheduleLayout.setContentsMargins(25, 0, 25, 0)
@@ -165,8 +164,10 @@ class mainSchedule(QWidget):
             _detail.setLayout(_detailLayout)
             _eventName = QLabel(_data[1], _detail)
             _eventName.setStyleSheet("font-weight: bold; font-size: 18px;")
+            _eventName.setWordWrap(True)
             _eventDetail = QLabel(f"{_data[2]}, Venue: {_data[3]}")
             _eventDetail.setStyleSheet("font-size: 12px;")
+            _eventDetail.setWordWrap(True)
             _detailLayout.addWidget(_eventName)
             _detailLayout.addWidget(_eventDetail)
             

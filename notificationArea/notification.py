@@ -177,7 +177,7 @@ class Notification(QWidget) :
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
 
-        _completed = _cursor.execute(f"SELECT COUNT(completionDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
+        _completed = _cursor.execute(f"SELECT COUNT(completionDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}' and executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _completed = _completed.fetchone()
         _total = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _total = _total.fetchone()
@@ -253,9 +253,9 @@ class Notification(QWidget) :
                     if len(_allSupport) > 0:
                         _random = random.randint(1, len(_allSupport))
                         _support = _allSupport[_random-1]
-                        _supportList.append(f"<a href='{_support[1]}' style='color: purple; text-decoration: none'>{_support[0]}</a>.")
-                    _messages.append([f"S{_event[0]}After", f"How was {_event[1]}? {"Here is some emotional support for you." if len(_supportList) > 0 else ""} {",".join(_supportList)}"])
-                    _notify.append(f"How was {_event[1]}?")
+                        _supportList.append(f"<a href='{_support[1]}' style='color: purple; text-decoration: none'>{_support[0]}</a>")
+                _messages.append([f"S{_event[0]}After", f"How was {_event[1]}? {"Here is some emotional support for you." if len(_supportList) > 0 else ""} {",".join(_supportList)}"])
+                _notify.append(f"How was {_event[1]}?")
 
         with open("data/log.txt", "r") as _file:
             for _line in _file:
