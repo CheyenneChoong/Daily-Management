@@ -182,7 +182,7 @@ class mainTask(QWidget) :
             _deleteButton = QPushButton(_button)
             _deleteButton.setIcon(QIcon("icon/delete.png"))
             _deleteButton.setIconSize(QSize(25, 25))
-            _deleteButton.clicked.connect(lambda event, taskID = _data[0]: (self._editor.deleteTask(taskID), self._refreshData()))
+            _deleteButton.clicked.connect(lambda event, taskID = _data[0]: (self._editor.deleteTask(taskID), self._displayTask(self._editor.filterTask(self._filterTaskPopUp.filterData()))))
             _buttonLayout.addWidget(_editButton, stretch=0)
             _buttonLayout.addWidget(_deleteButton, stretch=0)
             _taskLayout.addWidget(_button, stretch=0)
