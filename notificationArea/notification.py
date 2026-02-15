@@ -179,7 +179,7 @@ class Notification(QWidget) :
 
         _completed = _cursor.execute(f"SELECT COUNT(completionDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}' and executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _completed = _completed.fetchone()
-        _total = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
+        _total = _cursor.execute(f"SELECT COUNT(executeDate) FROM tasks WHERE completionDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}' OR status = 'pending' AND executeDate = '{QDate.toString(QDate.currentDate(), "d/M/yyyy")}';")
         _total = _total.fetchone()
         if _total[0] > 0:
             _taskProgress = int(_completed[0] / _total[0] * 100)
