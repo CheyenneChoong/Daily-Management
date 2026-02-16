@@ -2,7 +2,7 @@
 ## Overview
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white) ![Qt](https://img.shields.io/badge/Qt-%23217346.svg?style=for-the-badge&logo=Qt&logoColor=white) ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white) 
 
-This project aims to design a desktop application to help users manage their daily lives by combining task tracking, scheduling and personalized support. The BTS inpsired design of the UI is aimed to accommodate BTS fans looking for a space that is practical and functional while radiating BTS borahae energy. Developed using Python with SQLite as the database and Qt for the frontend framework. 
+This project aims to design a desktop application to help users manage their daily lives by combining task tracking, scheduling and personalized support. The BTS inspired design of the UI is aimed to accommodate BTS fans looking for a space that is practical and functional while radiating BTS borahae energy. Developed using Python with SQLite as the database and Qt for the frontend framework. 
 
 ## Features
 | Feature | Description |
