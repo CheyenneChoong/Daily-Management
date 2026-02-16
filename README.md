@@ -8,10 +8,10 @@ Desktop app for anyone who needs to manage their tasks, schedules and require em
 ## Features
 | Feature | Description |
 | --- | --- |
-| Performance | An overview of the user's progress in completing tasks (grouped by category) and the events scheduled for the current day. |
-| Tasks To Do | To do list for users. Users can add and categorize the tasks they need to complete as well as set a date for when the tasks need to be done on and the deadline for said task. |
-| Schedule | Event / activity planner for users. Users can plan and organize their events / activities. |
-| Support |  |
+| Performance | Provides users with a clear overview of task progress by category and highlights today's scheduled events, drawing directly from the Tasks To Do and Schedule data. |
+| Tasks To Do | Users can create categorized to-do tasks with execution dates and deadlines, providing a structured way to manage upcoming responsibilities. |
+| Schedule | Functions like a planner, allowing users to add detailed events and view them by date through an interactive calendar. |
+| Support | Users can record any emotional state they may feel, from common feelings (e.g. happy) to unique expressions. Users can link personalized resources like music or videos to help them cope. |
 
 ## Tech Stack
 |||
