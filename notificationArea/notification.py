@@ -65,13 +65,13 @@ class Notification(QWidget) :
         done to update it to the current day if necessary.
         """
         try:
-            _check = open("data/log.txt", "r")
+            _check = open("data/log.txt", "r", encoding="utf-8")
             _check.close()
         except:
-            _check = open("data/log.txt", "w")
+            _check = open("data/log.txt", "w", encoding="utf-8")
             _check.close()
 
-        with open("data/log.txt", "r") as _file:
+        with open("data/log.txt", "r", encoding="utf-8") as _file:
             _check = _file.readline().strip().split("|")[0]
             if not _check or QDate.fromString(_check, "d/M/yyyy") != QDate.currentDate():
                 _rewrite = True
@@ -79,7 +79,7 @@ class Notification(QWidget) :
                 _rewrite = False
         
         if _rewrite:
-            with open("data/log.txt", "w") as _file:
+            with open("data/log.txt", "w", encoding="utf-8") as _file:
                 _file.write(f"{QDate.toString(QDate.currentDate(), "d/M/yyyy")}|Today is {QDate.toString(QDate.currentDate(), "dddd, d MMMM yyyy")}.\n")
         
         """
@@ -108,7 +108,7 @@ class Notification(QWidget) :
             _message = _message.widget()
             _message.deleteLater()
         
-        with open("data/log.txt", "r") as _file:
+        with open("data/log.txt", "r", encoding="utf-8") as _file:
             for _line in _file:
                 _line = _line.split("|")
                 _message = QWidget(self._content)
@@ -151,7 +151,7 @@ class Notification(QWidget) :
         _tasks = _tasks.fetchone()
         _events = _cursor.execute(f"SELECT COUNT(event) FROM schedule WHERE dateTime LIKE '%{QDate.toString(QDate.currentDate(), "dd/MM/yyyy")}%';")
         _events = _events.fetchone()
-        with open("data/log.txt", "a") as _file:
+        with open("data/log.txt", "a", encoding="utf-8") as _file:
             _file.write(f"overview|{QDateTime.toString(QDateTime.currentDateTime(), "h:mm AP")} Totals tasks to complete today is {_tasks[0]}. Events scheduled for today is {_events[0]}.\n")
         _connect.commit()
         _connect.close()
@@ -187,18 +187,18 @@ class Notification(QWidget) :
             _taskProgress = 0
 
         # Milestone checker.
-        if _taskProgress >= 25 and _taskProgress <= 50:
+        if _taskProgress >= 25 and _taskProgress < 50:
             _key = "T25%"
-        elif _taskProgress > 50 and _taskProgress <= 75:
+        elif _taskProgress >= 50 and _taskProgress < 75:
             _key = "T50%"
-        elif _taskProgress > 75 and _taskProgress <= 95:
+        elif _taskProgress >= 75 and _taskProgress <= 95:
             _key = "T75%"
         elif _taskProgress == 100:
             _key = "T100%"
         else:
             _key = None
         
-        with open("data/log.txt", "r") as _file:
+        with open("data/log.txt", "r", encoding="utf-8") as _file:
             for _line in _file:
                 _line = _line.split("|")[0]
                 if _line == _key or not _key:
@@ -208,7 +208,7 @@ class Notification(QWidget) :
 
         # Randomly selects a support to be recommended to the user.   
         if _write:
-            with open("data/log.txt", "a") as _file:
+            with open("data/log.txt", "a", encoding="utf-8") as _file:
                 _file.write(f"{_key}|You have completed {_taskProgress}% of the tasks needed to be completed today.\n")
                 _allSupport = _cursor.execute("SELECT name, link FROM support;")
                 _allSupport = _allSupport.fetchall()
@@ -257,7 +257,7 @@ class Notification(QWidget) :
                 _messages.append([f"S{_event[0]}After", f"How was {_event[1]}? {"Here is some emotional support for you." if len(_supportList) > 0 else ""} {",".join(_supportList)}"])
                 _notify.append(f"How was {_event[1]}?")
 
-        with open("data/log.txt", "r") as _file:
+        with open("data/log.txt", "r", encoding="utf-8") as _file:
             for _line in _file:
                 _line = _line.split("|")[0]
                 for _message, _currentNotify in zip(_messages, _notify):
@@ -265,7 +265,7 @@ class Notification(QWidget) :
                         _messages.remove(_message)
                         _notify.remove(_currentNotify)
         
-        with open("data/log.txt", "a") as _file:
+        with open("data/log.txt", "a", encoding="utf-8") as _file:
             for _message, _currentNotify in zip(_messages, _notify):
                 _file.write(f"{_message[0]}|{_message[1]}\n")
                 _thread = threading.Thread(target=Notify, args=(_currentNotify,))
