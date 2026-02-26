@@ -185,6 +185,7 @@ class newSchedule(QWidget):
             _item.setData(Qt.UserRole, _emotion[0])
             self._emotionInput.addItem(_item)
         self._actionButton.setText("ADD")
+        self._scheduleID = 0
         self.show()
     
     def editMode(self, scheduleID):
