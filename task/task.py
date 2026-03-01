@@ -20,6 +20,8 @@ class Task():
         :param executeDate: Date when the task should be done.
         :param priority: Priority of the task.
         """
+        categoryName = categoryName.replace("'", "''")
+        taskName = taskName.replace("'", "''")
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
@@ -46,6 +48,9 @@ class Task():
         :param executeDate: Date when the task should be done.
         :param priority: Priority of the task.
         """
+        categoryName = categoryName.replace("'", "''")
+        taskName = taskName.replace("'", "''")
+
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")

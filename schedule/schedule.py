@@ -23,7 +23,7 @@ class schedule():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"INSERT INTO schedule (event, dateTime, venue) VALUES ('{event}', '{dateTime}', '{venue}');")
+        _cursor.execute(f"INSERT INTO schedule (event, dateTime, venue) VALUES ('{event.replace("'", "''")}', '{dateTime}', '{venue.replace("'", "''")}');")
         _scheduleID = _cursor.lastrowid
         for _emotion in emotionalState:
             _cursor.execute(f"INSERT INTO scheduleState (scheduleID, emotionID) VALUES ({_scheduleID}, {_emotion});")
@@ -42,7 +42,7 @@ class schedule():
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
         _cursor.execute(f"""UPDATE schedule 
-                        SET event = '{event}', dateTime = '{dateTime}', venue = '{venue}'
+                        SET event = '{event.replace("'", "''")}', dateTime = '{dateTime}', venue = '{venue.replace("'", "''")}'
                         WHERE scheduleID = {scheduleID}""")
         
         _allCurrent = _cursor.execute(f"SELECT scheduleStateID, emotionID FROM scheduleState WHERE scheduleID = {scheduleID};")
@@ -85,7 +85,8 @@ class schedule():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
 
-        if filter:  
+        if filter:
+            filter = filter.replace("'", "''")
             _scheduleData = _cursor.execute(f"""SELECT * FROM schedule WHERE event LIKE '%{filter}%' OR dateTime LIKE '%{filter}%' OR venue LIKE '%{filter}%';""")
         else:
             _scheduleData = _cursor.execute("SELECT * FROM schedule;")

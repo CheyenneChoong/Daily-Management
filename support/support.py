@@ -22,7 +22,7 @@ class emotionalState():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"INSERT INTO emotion (emotionalState) VALUES ('{emotionInput}');")
+        _cursor.execute(f"INSERT INTO emotion (emotionalState) VALUES ('{emotionInput.replace("'", "''")}');")
         _connect.commit()
         _connect.close()
     
@@ -30,7 +30,7 @@ class emotionalState():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"UPDATE emotion SET emotionalState = '{emotionInput}' WHERE emotionID = {emotionID};")
+        _cursor.execute(f"UPDATE emotion SET emotionalState = '{emotionInput.replace("'", "''")}' WHERE emotionID = {emotionID};")
         _connect.commit()
         _connect.close()
     
@@ -78,7 +78,7 @@ class support():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"INSERT INTO support (name, link) VALUES ('{name}', '{link}');")
+        _cursor.execute(f"INSERT INTO support (name, link) VALUES ('{name.replace("'", "''")}', '{link}');")
         _supportID = _cursor.lastrowid
         for _emotionID in emotionalState:
             _cursor.execute(f"INSERT INTO emotionalSupport (supportID, emotionID) VALUES ({_supportID}, {_emotionID});")
@@ -95,7 +95,7 @@ class support():
         _connect = sqlite3.connect("data/database.db")
         _cursor = _connect.cursor()
         _cursor.execute("PRAGMA foreign_keys = ON;")
-        _cursor.execute(f"UPDATE support SET name = '{name}', link = '{link}' WHERE supportID = {supportID};")
+        _cursor.execute(f"UPDATE support SET name = '{name.replace("'", "''")}', link = '{link}' WHERE supportID = {supportID};")
         
         _allCurrent = _cursor.execute(f"SELECT emotionalSupportID, emotionID FROM emotionalSupport WHERE supportID = {supportID};")
         _allCurrent = _allCurrent.fetchall()
